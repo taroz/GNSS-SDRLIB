@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{ba2fccec-5b40-4b6c-9531-beaab075f712}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{3ae377f7-3443-4722-96ce-7ffe94333e13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\fec">
+      <UniqueIdentifier>{7f67b289-49e9-49c4-b0d4-93868edc685d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\fft">
+      <UniqueIdentifier>{751eb03e-4eb9-49e8-a8b3-65274507fcce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\rtklib">
+      <UniqueIdentifier>{6b654be0-9b2f-4e7c-a648-48c5ad3abdc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rcv">
+      <UniqueIdentifier>{dd1b272c-df76-4f5e-ad5c-2618454ee160}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rcv\gn3s">
+      <UniqueIdentifier>{0ad58855-b2be-4162-b132-619262e3e2e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rcv\stereo">
+      <UniqueIdentifier>{35eff701-aef0-42f3-b9c2-2ae7c7d519b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rcv\bladerf">
+      <UniqueIdentifier>{9e0ae807-f9de-4b53-9458-5f20285b79e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rcv\rtlsdr">
+      <UniqueIdentifier>{b41ed6be-ba56-4925-9acc-be5466da5c8b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\sdr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\rcv\stereo\stereo.h">
+      <Filter>rcv\stereo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\rcv\rtlsdr\rtl-sdr.h">
+      <Filter>rcv\rtlsdr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\rcv\gn3s\gn3s.h">
+      <Filter>rcv\gn3s</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\rcv\bladerf\libbladeRF.h">
+      <Filter>rcv\bladerf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\lib\fft\fftw3.h">
+      <Filter>lib\fft</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\lib\fec\fec.h">
+      <Filter>lib\fec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\lib\rtklib\rtklib.h">
+      <Filter>lib\rtklib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\sdracq.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrcmn.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrcode.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrinit.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrlex.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrmain.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrnav.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrnav_bds.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrnav_gal.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrnav_glo.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrnav_gps.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrnav_sbs.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrout.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrplot.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrrcv.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrspec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrsync.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sdrtrk.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\rcv\stereo\stereo.c">
+      <Filter>rcv\stereo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\rcv\rtlsdr\convenience.c">
+      <Filter>rcv\rtlsdr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\rcv\rtlsdr\rtlsdr.c">
+      <Filter>rcv\rtlsdr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\rcv\gn3s\fusb_win32.cpp">
+      <Filter>rcv\gn3s</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\rcv\gn3s\fx2.cpp">
+      <Filter>rcv\gn3s</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\rcv\gn3s\gn3s.cpp">
+      <Filter>rcv\gn3s</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\rcv\bladerf\bladerf.c">
+      <Filter>rcv\bladerf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\lib\rtklib\rinex.c">
+      <Filter>lib\rtklib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\lib\rtklib\rtcm.c">
+      <Filter>lib\rtklib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\lib\rtklib\rtcm2.c">
+      <Filter>lib\rtklib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\lib\rtklib\rtcm3.c">
+      <Filter>lib\rtklib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\lib\rtklib\rtcm3e.c">
+      <Filter>lib\rtklib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\lib\rtklib\rtkcmn.c">
+      <Filter>lib\rtklib</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
