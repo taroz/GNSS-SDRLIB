@@ -22,12 +22,12 @@ Features
 * Real-time positioning with RTKLIB (<http://www.rtklib.com/>)
 * Observation data can be outputted in RINEX or RTCM format
 * Support following signals (tracking and decoding navigation message) 
-  * GPS L1CA
-  * GLONASS G1
-  * Galileo E1B
-  * BeiDou B1I
-  * QZSS L1CA/SAIF/LEX
-  * SBAS L1
+    * GPS L1CA
+    * GLONASS G1
+    * Galileo E1B
+    * BeiDou B1I
+    * QZSS L1CA/SAIF/LEX
+    * SBAS L1
 * Support following front-ends for real-time positioning
     * NSL Stereo <http://www.nsl.eu.com/primo.html>
     * SiGe GN3S sampler v2/v3 <https://www.sparkfun.com/products/10981>

@@ -1,0 +1,23 @@
+You can download the test IF data from following links:
+
+[L1 GPS/QZS/Galileo data with SiGe GN3S V3]
+
+
+[L1 GPS/QZS/Galileo data with rtl-sdr]
+
+
+[L1 GPS/QZS/Galileo data with BladeRF]
+
+
+[L1 GPS/QZS/Galileo + L1 Glonass data with NSL Stereo]
+
+
+[L1 GPS/QZS/Galileo + L1 BeiDou data with NSL Stereo]
+
+
+[L1 GPS/QZS + L2 GPS/QZS data with NSL Stereo]
+
+
+[L1 QZS + L6 QZS data with NSL Stereo (for LEX/SAIF test)]
+
+
