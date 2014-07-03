@@ -1,23 +1,23 @@
-You can download the test IF data from following links:
+You can download the test IF data from following links.
+Data size is too big (only 60 seconds but over 100M...)
 
 [L1 GPS/QZS/Galileo data with SiGe GN3S V3]
-
+http://www.taroz.net/gnsssdrlib/data/gn3sv3_l1.zip
 
 [L1 GPS/QZS/Galileo data with rtl-sdr]
+http://www.taroz.net/gnsssdrlib/data/rtlsdr_l1.zip
 
+[L1 GPS/QZS/Galileo data with rtl-sdr(TCXO)]
+http://www.taroz.net/gnsssdrlib/data/rtlsdr_tcxo_l1.zip
 
 [L1 GPS/QZS/Galileo data with BladeRF]
-
+http://www.taroz.net/gnsssdrlib/data/bladerf_l1.zip
 
 [L1 GPS/QZS/Galileo + L1 Glonass data with NSL Stereo]
-
+http://www.taroz.net/gnsssdrlib/data/stereo_l1_g1.zip
 
 [L1 GPS/QZS/Galileo + L1 BeiDou data with NSL Stereo]
-
-
-[L1 GPS/QZS + L2 GPS/QZS data with NSL Stereo]
-
+http://www.taroz.net/gnsssdrlib/data/stereo_l1_b1.zip
 
 [L1 QZS + L6 QZS data with NSL Stereo (for LEX/SAIF test)]
-
-
+http://www.taroz.net/gnsssdrlib/data/stereo_l1_l6.zip
