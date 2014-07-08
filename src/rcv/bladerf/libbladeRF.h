@@ -39,6 +39,7 @@ extern int bladerf_stop(void);
 extern void calibration_dcoffset(double *inbuf, int n, int dtype, char *outbuf);
 extern void bladerf_exp(unsigned char *buf, int n, char *expbuf);
 extern void bladerf_getbuff(uint64_t buffloc, int n, char *expbuf);
+extern void fbladerf_pushtomembuf(void);
 /*----------------------------------------------------------------------------*/
 
 #if defined _WIN32 || defined __CYGWIN__

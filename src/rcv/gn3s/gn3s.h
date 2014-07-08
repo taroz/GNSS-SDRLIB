@@ -26,3 +26,5 @@ extern void gn3s_getbuff_v2(uint64_t buffloc, int n, int dtype, char *expbuf);
 extern void gn3s_exp_v3(unsigned char *buf, int n, int i_mode, char *expbuf);
 extern void gn3s_getbuff_v3(uint64_t buffloc, int n, int dtype, char *expbuf);
 extern int  gn3s_pushtomembuf(void);
+extern void fgn3s_pushtomembuf(void);
+extern void fgn3s_getbuff(uint64_t buffloc, int n, int dtype, char *expbuf);

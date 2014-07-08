@@ -40,7 +40,7 @@ extern int stereo_initconf(void);
 extern void stereo_exp(const uint8_t *buf, int n, int dtype, char *expbuf);
 extern void stereo_getbuff(uint64_t buffloc, int n, int dtype, char *expbuf);
 extern void stereo_pushtomembuf(void);
-extern void filestereo_pushtomembuf(void);
+extern void fstereo_pushtomembuf(void);
 
 /* STEREO library functions --------------------------------------------------*/
 #ifdef __cplusplus

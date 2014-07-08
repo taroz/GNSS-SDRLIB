@@ -228,7 +228,7 @@ extern void stereo_getbuff(uint64_t buffloc, int n, int dtype, char *expbuf)
     unmlock(hbuffmtx);
 }
 /* push data to memory buffer --------------------------------------------------
-* push data to memory buffer from front end
+* push data to memory buffer from STEREO front end
 * args   : none
 * return : none
 *-----------------------------------------------------------------------------*/
@@ -246,11 +246,11 @@ extern void stereo_pushtomembuf(void)
     unmlock(hreadmtx);
 }
 /* push data to memory buffer --------------------------------------------------
-* push data to memory buffer from stereo binary IF file
+* push data to memory buffer from STEREO binary IF file
 * args   : none
 * return : none
 *-----------------------------------------------------------------------------*/
-extern void filestereo_pushtomembuf(void) 
+extern void fstereo_pushtomembuf(void) 
 {
     size_t nread;
 

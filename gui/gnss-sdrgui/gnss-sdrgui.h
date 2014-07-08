@@ -36,6 +36,7 @@ public:
 
     /* GPS */
     bool rb_G_FE1;
+    bool rb_G_FE2;
 	bool chk_TYPE_L1CA;
 	bool chk_G01;
 	bool chk_G02;
@@ -72,6 +73,7 @@ public:
 
     /* GLONASS */
     bool rb_R_FE1;
+    bool rb_R_FE2;
 	bool chk_TYPE_G1;
 	bool chk_R_7;
 	bool chk_R_6;
@@ -90,6 +92,7 @@ public:
 	
     /* Galileo */
     bool rb_E_FE1;
+    bool rb_E_FE2;
 	bool chk_TYPE_E1B;
 	bool chk_E11;
 	bool chk_E12;
@@ -98,6 +101,7 @@ public:
     
     /* BeiDou */
     bool rb_C_FE1;
+    bool rb_C_FE2;
 	bool chk_TYPE_B1I;
 	bool chk_C01;
 	bool chk_C02;
@@ -116,6 +120,7 @@ public:
 
     /* QZSS */
     bool rb_Q_FE1;
+    bool rb_Q_FE2;
 	bool chk_TYPE_L1CAQZS;
 	bool chk_TYPE_SAIF;
 	bool chk_TYPE_LEX;
@@ -123,6 +128,7 @@ public:
 
     /* SBAS */
     bool rb_S_FE1;
+    bool rb_S_FE2;
 	bool chk_TYPE_SBASL1;
 	bool chk_S120;
 	bool chk_S121;

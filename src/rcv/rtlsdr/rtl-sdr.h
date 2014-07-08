@@ -40,6 +40,7 @@ extern int rtlsdr_initconf(void);
 extern int rtlsdr_start(void);
 extern void rtlsdr_exp(uint8_t *buf, int n, char *expbuf);
 extern void rtlsdr_getbuff(uint64_t buffloc, int n, char *expbuf);
+extern void frtlsdr_pushtomembuf(void);
 /*----------------------------------------------------------------------------*/
 
 typedef struct rtlsdr_dev rtlsdr_dev_t;

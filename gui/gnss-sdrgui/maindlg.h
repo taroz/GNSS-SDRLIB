@@ -672,8 +672,8 @@ public:
             this->cmb_input->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
             this->cmb_input->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 9));
             this->cmb_input->FormattingEnabled = true;
-            this->cmb_input->Items->AddRange(gcnew cli::array< System::Object^  >(7) {L"STEREO", L"GN3Sv2", L"GN3Sv3", L"RTL-SDR", L"BladeRF", 
-                L"File (STEREO)", L"File"});
+            this->cmb_input->Items->AddRange(gcnew cli::array< System::Object^  >(11) {L"STEREO", L"GN3Sv2", L"GN3Sv3", L"RTL-SDR", L"BladeRF", 
+                L"File (STEREO)", L"File (GN3Sv2)", L"File (GN3Sv3)", L"File (RTL-SDR)", L"File (BladeRF)", L"File"});
             this->cmb_input->Location = System::Drawing::Point(69, 15);
             this->cmb_input->Name = L"cmb_input";
             this->cmb_input->Size = System::Drawing::Size(100, 20);
@@ -3307,6 +3307,10 @@ public:
                      l_input2->Enabled=false;
                      rb_f1I->Checked=true;
                      rb_f2IQ->Checked=true;
+                     tb_f1sf->Text="20.0";
+                     tb_f1if->Text="4.0";
+                     tb_f2sf->Text="20.0";
+                     tb_f2if->Text="0.0";
 
                      chk_input2->Checked=false;
                      chk_input2->Enabled=false;
@@ -3315,7 +3319,118 @@ public:
 
                      enable_FE2();
                      break;
-                 case 6: /* File */
+                 case 6: /* FILE(GN3Sv2) */
+                     cb_freq_L1();
+
+                     tb_input1->Enabled=true;
+                     b_input1->Enabled=true;
+                     l_input1->Enabled=true;
+                     tb_input2->Enabled=false;
+                     b_input2->Enabled=false;
+                     chk_input2->Enabled=false;
+                     l_input2->Enabled=false;
+                     rb_f1IQ->Checked=true;
+                     rb_f2IQ->Checked=true;
+                     tb_f1sf->Text="8.1838";
+                     tb_f1if->Text="0.0384";
+                     tb_f2sf->Text="0.0";
+                     tb_f2if->Text="0.0";
+
+                     chk_input2->Checked=false;
+                     chk_input2->Enabled=false;
+
+                     ppm_disable();
+
+                     disable_FE2();
+
+                     config->tb_corrn="6";
+                     config->tb_corrd="2";
+                     config->tb_corrp="2";
+                     break;
+                 case 7: /* FILE(GN3Sv3) */
+                     cb_freq_L1();
+
+                     tb_input1->Enabled=true;
+                     b_input1->Enabled=true;
+                     l_input1->Enabled=true;
+                     tb_input2->Enabled=false;
+                     b_input2->Enabled=false;
+                     chk_input2->Enabled=false;
+                     l_input2->Enabled=false;
+                     rb_f1I->Checked=true;
+                     rb_f2IQ->Checked=true;
+                     tb_f1sf->Text="16.368";
+                     tb_f1if->Text="4.092";
+                     tb_f2sf->Text="0.0";
+                     tb_f2if->Text="0.0";
+
+                     chk_input2->Checked=false;
+                     chk_input2->Enabled=false;
+
+                     ppm_disable();
+
+                     disable_FE2();
+
+                     config->tb_corrn="6";
+                     config->tb_corrd="3";
+                     config->tb_corrp="6";
+                     break;
+                 case 8: /* FILE(RTLSDR) */
+                     cb_freq_L1();
+
+                     tb_input1->Enabled=true;
+                     b_input1->Enabled=true;
+                     l_input1->Enabled=true;
+                     tb_input2->Enabled=false;
+                     b_input2->Enabled=false;
+                     chk_input2->Enabled=false;
+                     l_input2->Enabled=false;
+                     rb_f1IQ->Checked=true;
+                     rb_f2IQ->Checked=true;
+                     tb_f1sf->Text="2.048";
+                     tb_f1if->Text="0.0";
+                     tb_f2sf->Text="0.0";
+                     tb_f2if->Text="0.0";
+
+                     chk_input2->Checked=false;
+                     chk_input2->Enabled=false;
+
+                     ppm_enable();
+
+                     disable_FE2();
+
+                     config->tb_corrn="4";
+                     config->tb_corrd="1";
+                     config->tb_corrp="1";
+                     config->tb_dll2="2.0";
+                     config->tb_pll2="20.0";
+                     config->tb_fll2="50.0";
+                     break;
+                 case 9: /* FILE(BladeRF) */
+                     cb_freq_L1();
+
+                     tb_input1->Enabled=true;
+                     b_input1->Enabled=true;
+                     l_input1->Enabled=true;
+                     tb_input2->Enabled=false;
+                     b_input2->Enabled=false;
+                     chk_input2->Enabled=false;
+                     l_input2->Enabled=false;
+                     rb_f1IQ->Checked=true;
+                     rb_f2IQ->Checked=true;
+                     tb_f1sf->Text="20.0";
+                     tb_f1if->Text="0.0";
+                     tb_f2sf->Text="0.0";
+                     tb_f2if->Text="0.0";
+
+                     chk_input2->Checked=false;
+                     chk_input2->Enabled=false;
+
+                     ppm_disable();
+
+                     disable_FE2();
+                     break;
+                 case 10: /* File */
                      cb_freq_all();
 
                      tb_input1->Enabled=true;
@@ -3420,7 +3535,31 @@ public:
                      case 5: /* File (STEREO) */
                          cb_freq_stereo();
                          break;
-                     case 6: /* File */
+                     case 6: /* File (GN3Sv2) */
+                         cb_freq_L1();
+                         config->tb_corrn="6";
+                         config->tb_corrd="2";
+                         config->tb_corrp="2";
+                         break;
+                     case 7: /* File (GN3Sv3) */
+                         cb_freq_L1();
+                         config->tb_corrn="6";
+                         config->tb_corrd="3";
+                         config->tb_corrp="6";
+                         break;
+                     case 8: /* File (RTLSDR) */
+                         cb_freq_L1();
+                         config->tb_corrn="4";
+                         config->tb_corrd="1";
+                         config->tb_corrp="1";
+                         config->tb_dll2="2.0";
+                         config->tb_pll2="20.0";
+                         config->tb_fll2="50.0";
+                         break;
+                     case 9: /* File (BladeRF) */
+                         cb_freq_L1();
+                         break;
+                     case 10: /* File */
                          cb_freq_all();
                          break;
                      }
@@ -3555,6 +3694,7 @@ public:
 
                 /* GPS */
                 rb_G_FE1->Checked=config->rb_G_FE1;
+                rb_G_FE2->Checked=config->rb_G_FE2;
                 chk_TYPE_L1CA->Checked=config->chk_TYPE_L1CA;
                 chk_G01->Checked=config->chk_G01;
                 chk_G02->Checked=config->chk_G02;
@@ -3591,6 +3731,7 @@ public:
 
                 /* GLONASS */
                 rb_R_FE1->Checked=config->rb_R_FE1;
+                rb_R_FE2->Checked=config->rb_R_FE2;
                 chk_TYPE_G1->Checked=config->chk_TYPE_G1;
                 chk_R_7->Checked=config->chk_R_7;
                 chk_R_6->Checked=config->chk_R_6;
@@ -3609,6 +3750,7 @@ public:
 
                 /* Galileo */
                 rb_E_FE1->Checked=config->rb_E_FE1;
+                rb_E_FE2->Checked=config->rb_E_FE2;
                 chk_TYPE_E1B->Checked=config->chk_TYPE_E1B;
                 chk_E11->Checked=config->chk_E11;
                 chk_E12->Checked=config->chk_E12;
@@ -3617,6 +3759,7 @@ public:
 
                 /* BeiDou */
                 rb_C_FE1->Checked=config->rb_C_FE1;
+                rb_C_FE2->Checked=config->rb_C_FE2;
                 chk_TYPE_B1I->Checked=config->chk_TYPE_B1I;
                 chk_C01->Checked=config->chk_C01;
                 chk_C02->Checked=config->chk_C02;
@@ -3641,6 +3784,7 @@ public:
 
                 /* SBAS */
                 rb_S_FE1->Checked=config->rb_S_FE1;
+                rb_S_FE2->Checked=config->rb_S_FE2;
                 chk_TYPE_SBASL1->Checked=config->chk_TYPE_SBASL1;
                 chk_S120->Checked=config->chk_S120;
                 chk_S121->Checked=config->chk_S121;
@@ -3700,6 +3844,7 @@ public:
 
                 /* GPS */
                 config->rb_G_FE1=rb_G_FE1->Checked;
+                config->rb_G_FE2=rb_G_FE2->Checked;
                 config->chk_TYPE_L1CA=chk_TYPE_L1CA->Checked;
                 config->chk_G01=chk_G01->Checked;
                 config->chk_G02=chk_G02->Checked;
@@ -3736,6 +3881,7 @@ public:
 
                 /* GLONASS */
                 config->rb_R_FE1=rb_R_FE1->Checked;
+                config->rb_R_FE2=rb_R_FE2->Checked;
                 config->chk_TYPE_G1=chk_TYPE_G1->Checked;
                 config->chk_R_7=chk_R_7->Checked;
                 config->chk_R_6=chk_R_6->Checked;
@@ -3754,6 +3900,7 @@ public:
 
                 /* Galileo */
                 config->rb_E_FE1=rb_E_FE1->Checked;
+                config->rb_E_FE2=rb_E_FE2->Checked;
                 config->chk_TYPE_E1B=chk_TYPE_E1B->Checked;
                 config->chk_E11=chk_E11->Checked;
                 config->chk_E12=chk_E12->Checked;
@@ -3762,6 +3909,7 @@ public:
 
                 /* BeiDou */
                 config->rb_C_FE1=rb_C_FE1->Checked;
+                config->rb_C_FE2=rb_C_FE2->Checked;
                 config->chk_TYPE_B1I=chk_TYPE_B1I->Checked;
                 config->chk_C01=chk_C01->Checked;
                 config->chk_C02=chk_C02->Checked;
@@ -3786,6 +3934,7 @@ public:
 
                 /* SBAS */
                 config->rb_S_FE1=rb_S_FE1->Checked;
+                config->rb_S_FE2=rb_S_FE2->Checked;
                 config->chk_TYPE_SBASL1=chk_TYPE_SBASL1->Checked;
                 config->chk_S120=chk_S120->Checked;
                 config->chk_S121=chk_S121->Checked;

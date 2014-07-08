@@ -164,3 +164,29 @@ extern void rtlsdr_getbuff(uint64_t buffloc, int n, char *expbuf)
     }
     unmlock(hbuffmtx);
 }
+/* push data to memory buffer --------------------------------------------------
+* push data to memory buffer from STEREO binary IF file
+* args   : none
+* return : none
+*-----------------------------------------------------------------------------*/
+extern void frtlsdr_pushtomembuf(void) 
+{
+    size_t nread;
+
+    mlock(hbuffmtx);
+
+    nread=fread(
+        &sdrstat.buff[(sdrstat.buffcnt%MEMBUFFLEN)*2*RTLSDR_DATABUFF_SIZE],
+        1,2*RTLSDR_DATABUFF_SIZE,sdrini.fp1);
+
+    unmlock(hbuffmtx);
+
+    if (nread<2*RTLSDR_DATABUFF_SIZE) {
+        sdrstat.stopflag=ON;
+        SDRPRINTF("end of file!\n");
+    }
+
+    mlock(hreadmtx);
+    sdrstat.buffcnt++;
+    unmlock(hreadmtx);
+}

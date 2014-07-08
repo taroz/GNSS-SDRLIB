@@ -198,7 +198,7 @@ extern void gn3s_getbuff_v3(uint64_t buffloc, int n, int dtype, char *expbuf)
     unmlock(hbuffmtx);
 }
 /* push data to memory buffer --------------------------------------------------
-* push data to memory buffer from front end
+* push data to memory buffer from GN3S front end
 * args   : none
 * return : none
 *-----------------------------------------------------------------------------*/
@@ -226,4 +226,54 @@ extern int gn3s_pushtomembuf(void)
 
 
     return 0;
+}
+/* push data to memory buffer --------------------------------------------------
+* post-processing function: push data to memory buffer from GN3S binary IF file
+* args   : none
+* return : none
+*-----------------------------------------------------------------------------*/
+extern void fgn3s_pushtomembuf(void) 
+{
+    size_t nread;
+
+    mlock(hbuffmtx);
+
+    nread=fread(&sdrstat.buff[(sdrstat.buffcnt%MEMBUFFLEN)*GN3S_BUFFSIZE],
+        1,GN3S_BUFFSIZE,sdrini.fp1);
+
+    unmlock(hbuffmtx);
+
+    if (nread<GN3S_BUFFSIZE) {
+        sdrstat.stopflag=ON;
+        SDRPRINTF("end of file!\n");
+    }
+
+    mlock(hreadmtx);
+    sdrstat.buffcnt++;
+    unmlock(hreadmtx);
+}
+/* get current data buffer from IF file ----------------------------------------
+* post-processing function: get current data buffer from memory buffer
+* args   : uint64_t buffloc I   buffer location
+*          int    n         I   number of grab data 
+*          int    dtype     I   data type (DTYPEI or DTYPEIQ)
+*          char   *expbuff  O   extracted data buffer
+* return : none
+*-----------------------------------------------------------------------------*/
+extern void fgn3s_getbuff(uint64_t buffloc, int n, int dtype, char *expbuf)
+{
+    uint64_t membuffloc=dtype*buffloc%(MEMBUFFLEN*dtype*GN3S_BUFFSIZE);
+    int nout;
+
+    n=dtype*n;
+    nout=(int)((membuffloc+n)-(MEMBUFFLEN*dtype*GN3S_BUFFSIZE));
+
+    mlock(hbuffmtx);
+    if (nout>0) {
+        memcpy(expbuf,&sdrstat.buff[membuffloc],n-nout);
+        memcpy(&expbuf[(n-nout)],&sdrstat.buff[0],nout);
+    } else {
+        memcpy(expbuf,&sdrstat.buff[membuffloc],n);
+    }
+    unmlock(hbuffmtx);
 }

@@ -24,14 +24,13 @@ extern int rcvinit(sdrini_t *ini)
 
     switch (ini->fend) {
 #ifdef STEREO
-        /* NSL stereo */
+    /* NSL STEREO */
     case FEND_STEREO: 
         if (stereo_init()<0) return -1; /* stereo initialization */
         
         /* frontend buffer size */
-        sdrstat.fendbuffsize=STEREO_DATABUFF_SIZE;
-        /* total buffer size */
-        sdrstat.buffsize=STEREO_DATABUFF_SIZE*MEMBUFFLEN;
+        sdrstat.fendbuffsize=STEREO_DATABUFF_SIZE; /* frontend buff size */
+        sdrstat.buffsize=STEREO_DATABUFF_SIZE*MEMBUFFLEN; /* total */
 
         /* memory allocation */
         sdrstat.buff=(uint8_t*)malloc(sdrstat.buffsize);
@@ -57,20 +56,18 @@ extern int rcvinit(sdrini_t *ini)
             SDRPRINTF("error: STEREO_GrabInit\n");
             return -1;
         }
-#endif
+#endif /* STEREOV26 */
         break;
 #endif
-        /* STEREO Binary File */
-    case FEND_FILESTEREO: 
+    /* STEREO Binary File */
+    case FEND_FSTEREO: 
         /* IF file open */
         if ((ini->fp1 = fopen(ini->file1,"rb"))==NULL){
             SDRPRINTF("error: failed to open file : %s\n",ini->file1);
             return -1;
         }
-        /* frontend buffer size */
-        sdrstat.fendbuffsize=STEREO_DATABUFF_SIZE;
-        /* total buffer size */
-        sdrstat.buffsize=STEREO_DATABUFF_SIZE*MEMBUFFLEN;
+        sdrstat.fendbuffsize=STEREO_DATABUFF_SIZE; /* frontend buff size */
+        sdrstat.buffsize=STEREO_DATABUFF_SIZE*MEMBUFFLEN; /* total */
 
         /* memory allocation */
         sdrstat.buff=(uint8_t*)malloc(sdrstat.buffsize);
@@ -80,18 +77,17 @@ extern int rcvinit(sdrini_t *ini)
         }
         break;
 #ifdef GN3S
-        /* SiGe GN3S v2/v3 */
+    /* SiGe GN3S v2/v3 */
     case FEND_GN3SV2: 
     case FEND_GN3SV3: 
         if (gn3s_init()<0) return -1; /* GN3S initialization */
 
-        /* frontend buffer size */
         if (ini->fend==FEND_GN3SV2)
-            sdrstat.fendbuffsize=GN3S_BUFFSIZE/2;
+            sdrstat.fendbuffsize=GN3S_BUFFSIZE/2; /* frontend buff size */
         if (ini->fend==FEND_GN3SV3)
-            sdrstat.fendbuffsize=GN3S_BUFFSIZE;
-        /* total buffer size */
-        sdrstat.buffsize=GN3S_BUFFSIZE*MEMBUFFLEN;
+            sdrstat.fendbuffsize=GN3S_BUFFSIZE; /* frontend buff size */
+
+        sdrstat.buffsize=GN3S_BUFFSIZE*MEMBUFFLEN; /* total */
 
         /* memory allocation */
         sdrstat.buff=(uint8_t*)malloc(sdrstat.buffsize);
@@ -101,15 +97,36 @@ extern int rcvinit(sdrini_t *ini)
         }
         break;
 #endif
+    /* GN3S Binary File */
+    case FEND_FGN3SV2:
+    case FEND_FGN3SV3:
+        /* IF file open */
+        if ((ini->fp1 = fopen(ini->file1,"rb"))==NULL){
+            SDRPRINTF("error: failed to open file : %s\n",ini->file1);
+            return -1;
+        }
+        
+        if (ini->fend==FEND_GN3SV2)
+            sdrstat.fendbuffsize=GN3S_BUFFSIZE/2; /* frontend buff size */
+        if (ini->fend==FEND_GN3SV3)
+            sdrstat.fendbuffsize=GN3S_BUFFSIZE; /* frontend buff size */
+
+        sdrstat.buffsize=GN3S_BUFFSIZE*MEMBUFFLEN; /* total */
+
+        /* memory allocation */
+        sdrstat.buff=(uint8_t*)malloc(sdrstat.buffsize);
+        if (NULL==sdrstat.buff) {
+            SDRPRINTF("error: failed to allocate memory for the buffer\n");
+            return -1;
+        }
+        break;
 #ifdef BLADERF
-        /* Nuand bladeRF */
+    /* Nuand bladeRF */
     case FEND_BLADERF:
         if (bladerf_init()<0) return -1; /* bladeRF initialization */
 
-        /* frontend buffer size */
-        sdrstat.fendbuffsize=BLADERF_DATABUFF_SIZE;
-        /* total buffer size */
-        sdrstat.buffsize=2*BLADERF_DATABUFF_SIZE*MEMBUFFLEN;
+        sdrstat.fendbuffsize=BLADERF_DATABUFF_SIZE; /* frontend buff size */
+        sdrstat.buffsize=2*BLADERF_DATABUFF_SIZE*MEMBUFFLEN; /* total */
 
         /* memory allocation */
         sdrstat.buff=(uint8_t*)malloc(sdrstat.buffsize);
@@ -119,15 +136,32 @@ extern int rcvinit(sdrini_t *ini)
         }
         break;
 #endif
+    /* BladeRF Binary File */
+    case FEND_FBLADERF:
+        /* IF file open */
+        if ((ini->fp1 = fopen(ini->file1,"rb"))==NULL){
+            SDRPRINTF("error: failed to open file : %s\n",ini->file1);
+            return -1;
+        }
+
+        sdrstat.fendbuffsize=BLADERF_DATABUFF_SIZE; /* frontend buff size */
+        sdrstat.buffsize=2*BLADERF_DATABUFF_SIZE*MEMBUFFLEN; /* total */
+
+        /* memory allocation */
+        sdrstat.buff=(uint8_t*)malloc(sdrstat.buffsize);
+        if (NULL==sdrstat.buff) {
+            SDRPRINTF("error: failed to allocate memory for the buffer\n");
+            return -1;
+        }
+        break;
 #ifdef RTLSDR
-        /* RTL-SDR */
+    /* RTL-SDR */
     case FEND_RTLSDR:
         if (rtlsdr_init()<0) return -1; /* rtlsdr initialization */
 
         /* frontend buffer size */
-        sdrstat.fendbuffsize=RTLSDR_DATABUFF_SIZE;
-        /* total buffer size */
-        sdrstat.buffsize=2*RTLSDR_DATABUFF_SIZE*MEMBUFFLEN;
+        sdrstat.fendbuffsize=RTLSDR_DATABUFF_SIZE; /* frontend buff size */
+        sdrstat.buffsize=2*RTLSDR_DATABUFF_SIZE*MEMBUFFLEN; /* total */
 
         /* memory allocation */
         sdrstat.buff=(uint8_t*)malloc(sdrstat.buffsize);
@@ -137,7 +171,26 @@ extern int rcvinit(sdrini_t *ini)
         }
         break;
 #endif
-        /* File */
+    /* RTL-SDR Binary File */
+    case FEND_FRTLSDR:
+        /* IF file open */
+        if ((ini->fp1 = fopen(ini->file1,"rb"))==NULL){
+            SDRPRINTF("error: failed to open file : %s\n",ini->file1);
+            return -1;
+        }
+
+        /* frontend buffer size */
+        sdrstat.fendbuffsize=RTLSDR_DATABUFF_SIZE; /* frontend buff size */
+        sdrstat.buffsize=2*RTLSDR_DATABUFF_SIZE*MEMBUFFLEN; /* total */
+
+        /* memory allocation */
+        sdrstat.buff=(uint8_t*)malloc(sdrstat.buffsize);
+        if (NULL==sdrstat.buff) {
+            SDRPRINTF("error: failed to allocate memory for the buffer\n");
+            return -1;
+        }
+        break;
+    /* File */
     case FEND_FILE:
         /* IF file open (FILE1) */
         if ((ini->fp1 = fopen(ini->file1,"rb"))==NULL){
@@ -152,9 +205,8 @@ extern int rcvinit(sdrini_t *ini)
             }
         }
         /* frontend buffer size */
-        sdrstat.fendbuffsize=FILE_BUFFSIZE;
-        /* total buffer size */
-        sdrstat.buffsize=FILE_BUFFSIZE*MEMBUFFLEN;
+        sdrstat.fendbuffsize=FILE_BUFFSIZE; /* frontend buff size */
+        sdrstat.buffsize=FILE_BUFFSIZE*MEMBUFFLEN; /* total */
 
         /* memory allocation */
         if (ini->fp1!=NULL) {
@@ -186,35 +238,39 @@ extern int rcvquit(sdrini_t *ini)
 {
     switch (ini->fend) {
 #ifdef STEREO
-        /* NSL stereo */
+    /* NSL stereo */
     case FEND_STEREO: 
         stereo_quit();
         break;
 #endif
-        /* STEREO Binary File */
-    case FEND_FILESTEREO: 
-        if (ini->fp1!=NULL) fclose(ini->fp1); ini->fp1=NULL;
-        break;
 #ifdef GN3S
-        /* SiGe GN3S v2/v3 */
+    /* SiGe GN3S v2/v3 */
     case FEND_GN3SV2:
     case FEND_GN3SV3:
         gn3s_quit();
         break;
 #endif
 #ifdef BLADERF
-        /* Nuand bladeRF */
+    /* Nuand bladeRF */
     case FEND_BLADERF:
         bladerf_quit();
         break;
 #endif
 #ifdef RTLSDR
-        /* RTL-SDR */
+    /* RTL-SDR */
     case FEND_RTLSDR:
         rtlsdr_quit();
         break;
 #endif
-        /* File */
+    /* Front End Binary File */
+    case FEND_FSTEREO:
+    case FEND_FGN3SV2:
+    case FEND_FGN3SV3:
+    case FEND_FBLADERF:
+    case FEND_FRTLSDR:
+        if (ini->fp1!=NULL) fclose(ini->fp1); ini->fp1=NULL;
+        break;
+    /* File */
     case FEND_FILE:
         if (ini->fp1!=NULL) fclose(ini->fp1); ini->fp1=NULL;
         if (ini->fp2!=NULL) fclose(ini->fp2); ini->fp2=NULL;
@@ -237,7 +293,7 @@ extern int rcvgrabstart(sdrini_t *ini)
 {
     switch (ini->fend) {
 #ifdef STEREO
-        /* NSL stereo */
+    /* NSL stereo */
     case FEND_STEREO: 
 #ifndef STEREOV26
         if (STEREO_GrabStart()<0) {
@@ -246,31 +302,8 @@ extern int rcvgrabstart(sdrini_t *ini)
         }
 #endif
 #endif
-        break;
-        /* STEREO Binary File */
-    case FEND_FILESTEREO: 
-        break;
-#ifdef GN3S
-        /* SiGe GN3S v2/v3 */
-    case FEND_GN3SV2:
-    case FEND_GN3SV3:
-        break;
-#endif
-#ifdef BLADERF
-        /* Nuand bladeRF */
-    case FEND_BLADERF:
-        break;
-#endif
-#ifdef RTLSDR
-        /* RTL-SDR */
-    case FEND_RTLSDR:
-        break;
-#endif
-        /* File */
-    case FEND_FILE: 
-        break;
     default:
-        return -1;
+        return 0;
     }
     return 0;
 }
@@ -285,7 +318,7 @@ extern int rcvgrabdata(sdrini_t *ini)
 
     switch (ini->fend) {
 #ifdef STEREO
-        /* NSL stereo */
+    /* NSL stereo */
     case FEND_STEREO: 
 #ifdef STEREOV26
         buffcnt=(unsigned int)(sdrstat.buffcnt%MEMBUFFLEN);
@@ -298,17 +331,12 @@ extern int rcvgrabdata(sdrini_t *ini)
             SDRPRINTF("error: STEREO Buffer overrun...\n");
             return -1;
         }
-#endif        
+#endif
         stereo_pushtomembuf(); /* copy to membuffer */
         break;
 #endif
-        /* STEREO Binary File */
-    case FEND_FILESTEREO: 
-        filestereo_pushtomembuf(); /* copy to membuffer */
-        sleepms(5);
-        break;
 #ifdef GN3S
-        /* SiGe GN3S v2/v3 */
+    /* SiGe GN3S v2/v3 */
     case FEND_GN3SV2:
     case FEND_GN3SV3:
         if (gn3s_pushtomembuf()<0) {
@@ -318,7 +346,7 @@ extern int rcvgrabdata(sdrini_t *ini)
         break;
 #endif
 #ifdef BLADERF
-        /* Nuand bladeRF */
+    /* Nuand BladeRF */
     case FEND_BLADERF:
         if (bladerf_start()<0) {
             SDRPRINTF("error: bladeRF...\n");
@@ -327,7 +355,7 @@ extern int rcvgrabdata(sdrini_t *ini)
         break;
 #endif
 #ifdef RTLSDR
-        /* RTL-SDR */
+    /* RTL-SDR */
     case FEND_RTLSDR:
         if (rtlsdr_start()<0) {
             SDRPRINTF("error: rtlsdr...\n");
@@ -335,31 +363,30 @@ extern int rcvgrabdata(sdrini_t *ini)
         }
         break;
 #endif
-        /* File */
+    /* STEREO Binary File */
+    case FEND_FSTEREO: 
+        fstereo_pushtomembuf(); /* copy to membuffer */
+        sleepms(5);
+        break;
+    /* GN3S Binary File */
+    case FEND_FGN3SV2:
+    case FEND_FGN3SV3: 
+        fgn3s_pushtomembuf(); /* copy to membuffer */
+        sleepms(5);
+        break;
+    /* BladeRF Binary File */
+    case FEND_FBLADERF: 
+        fbladerf_pushtomembuf(); /* copy to membuffer */
+        sleepms(5);
+        break;
+    /* RTL-SDR Binary File */
+    case FEND_FRTLSDR: 
+        frtlsdr_pushtomembuf(); /* copy to membuffer */
+        sleepms(5);
+        break;/* File */
     case FEND_FILE:
         file_pushtomembuf(); /* copy to membuffer */
         sleepms(5);
-        break;
-    default:
-        return -1;
-    }
-    return 0;
-}
-/* grab current data from file -------------------------------------------------
-* push data to memory buffer from IF file
-* args   : sdrini_t *ini    I   sdr initialization struct
-* return : int                  status 0:okay -1:failure
-*-----------------------------------------------------------------------------*/
-extern int rcvgrabdata_file(sdrini_t *ini)
-{
-    switch (ini->fend) {
-        /* STEREO Binary File */
-    case FEND_FILESTEREO: 
-        filestereo_pushtomembuf(); /* copy to membuffer */
-        break;
-        /* File */
-    case FEND_FILE:
-        file_pushtomembuf(); /* copy to membuffer */
         break;
     default:
         return -1;
@@ -381,38 +408,51 @@ extern int rcvgetbuff(sdrini_t *ini, uint64_t buffloc, int n, int ftype,
 {
     switch (ini->fend) {
 #ifdef STEREO
-        /* NSL stereo */
+    /* NSL STEREO */
     case FEND_STEREO: 
         stereo_getbuff(buffloc,n,dtype,expbuf);
         break;
 #endif
-        /* STEREO Binary File */
-    case FEND_FILESTEREO: 
-        stereo_getbuff(buffloc,n,dtype,expbuf);
-        break;
 #ifdef GN3S
-        /* SiGe GN3S v2 */
+    /* SiGe GN3S v2 */
     case FEND_GN3SV2:
         gn3s_getbuff_v2(buffloc,n,dtype,expbuf);
         break;
-        /* SiGe GN3S v3 */
+    /* SiGe GN3S v3 */
     case FEND_GN3SV3:
         gn3s_getbuff_v3(buffloc,n,dtype,expbuf);
         break;
 #endif
 #ifdef BLADERF
-        /* Nuand bladeRF */
+    /* Nuand BladeRF */
     case FEND_BLADERF:
         bladerf_getbuff(buffloc,n,expbuf);
         break;
 #endif
 #ifdef RTLSDR
-        /* RTL-SDR */
+    /* RTL-SDR */
     case FEND_RTLSDR:
         rtlsdr_getbuff(buffloc,n,expbuf);
         break;
 #endif
-        /* File */
+    /* STEREO Binary File */
+    case FEND_FSTEREO: 
+        stereo_getbuff(buffloc,n,dtype,expbuf);
+        break;
+    /* GN3Sv2/v3 Binary File */
+    case FEND_FGN3SV2: 
+    case FEND_FGN3SV3: 
+        fgn3s_getbuff(buffloc,n,dtype,expbuf);
+        break;
+    /* BladeRF Binary File */
+    case FEND_FBLADERF: 
+        bladerf_getbuff(buffloc,n,expbuf);
+        break;
+    /* RTL-SDR Binary File */
+    case FEND_FRTLSDR: 
+        rtlsdr_getbuff(buffloc,n,expbuf);
+        break;
+    /* File */
     case FEND_FILE:
         file_getbuff(buffloc,n,ftype,dtype,expbuf);
         break;

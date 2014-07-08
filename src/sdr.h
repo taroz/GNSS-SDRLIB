@@ -120,13 +120,17 @@ extern "C" {
 #define MAXBITS       3000             /* maximum bit length */
 
 /* front end setting */
-#define FEND_STEREO   0                /* front end type: NSL stereo */
+#define FEND_STEREO   0                /* front end type: NSL STEREO */
 #define FEND_GN3SV2   1                /* front end type: SiGe GN3S v2 */
 #define FEND_GN3SV3   2                /* front end type: SiGe GN3S v3 */
 #define FEND_RTLSDR   3                /* front end type: RTL-SDR */
-#define FEND_BLADERF  4                /* front end type: Nuand bladeRF */
-#define FEND_FILESTEREO 5              /* front end type: NSL binary file */
-#define FEND_FILE     6                /* front end type: IF file */
+#define FEND_BLADERF  4                /* front end type: Nuand BladeRF */
+#define FEND_FSTEREO  5                /* front end type: STEREO binary file */
+#define FEND_FGN3SV2  6                /* front end type: GN3Sv2 binary file */
+#define FEND_FGN3SV3  7                /* front end type: GN3Sv3 binary file */
+#define FEND_FRTLSDR  8                /* front end type: RTL-SDR binary file */
+#define FEND_FBLADERF 9                /* front end type: BladeRF binary file */
+#define FEND_FILE     10               /* front end type: IF file */
 #define FTYPE1        1                /* front end number */
 #define FTYPE2        2                /* front end number */
 #define DTYPEI        1                /* sampling type: real */
@@ -804,7 +808,6 @@ extern int rcvinit(sdrini_t *ini);
 extern int rcvquit(sdrini_t *ini);
 extern int rcvgrabstart(sdrini_t *ini);
 extern int rcvgrabdata(sdrini_t *ini);
-extern int rcvgrabdata_file(sdrini_t *ini);
 extern int rcvgetbuff(sdrini_t *ini, uint64_t buffloc, int n, int ftype, 
                       int dtype, char *expbuf);
 extern void file_pushtomembuf(void);

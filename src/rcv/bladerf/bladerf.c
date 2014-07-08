@@ -282,3 +282,36 @@ extern void bladerf_getbuff(uint64_t buffloc, int n, char *expbuf)
     }
     unmlock(hbuffmtx);
 }
+/* push data to memory buffer --------------------------------------------------
+* push data to memory buffer from BladeRF binary IF file
+* args   : none
+* return : none
+*-----------------------------------------------------------------------------*/
+extern void fbladerf_pushtomembuf(void) 
+{
+    size_t nread;
+    uint16_t buff[BLADERF_DATABUFF_SIZE*2];
+    int i,ind;
+
+    mlock(hbuffmtx);
+
+    nread=fread(buff,sizeof(uint16_t),2*BLADERF_DATABUFF_SIZE,sdrini.fp1);
+    
+    /* buffer index */
+    ind=(sdrstat.buffcnt%MEMBUFFLEN)*2*BLADERF_DATABUFF_SIZE;
+
+    for (i=0;i<nread;i++) {
+        sdrstat.buff[ind+i]=(uint8_t)(buff[i]&0xfff);
+    }
+
+    unmlock(hbuffmtx);
+
+    if (nread<2*BLADERF_DATABUFF_SIZE) {
+        sdrstat.stopflag=ON;
+        SDRPRINTF("end of file!\n");
+    }
+
+    mlock(hreadmtx);
+    sdrstat.buffcnt++;
+    unmlock(hreadmtx);
+}

@@ -124,14 +124,20 @@ extern int readinifile(sdrini_t *ini)
     }
     readinistr(fendfile,"FEND","TYPE",str);
     if (strcmp(str,"STEREO")==0)     ini->fend=FEND_STEREO;
-    else if (strcmp(str,"FILESTEREO")==0) ini->fend=FEND_FILESTEREO;
     else if (strcmp(str,"GN3SV2")==0)     ini->fend=FEND_GN3SV2;
     else if (strcmp(str,"GN3SV3")==0)     ini->fend=FEND_GN3SV3;
     else if (strcmp(str,"BLADERF")==0)     ini->fend=FEND_BLADERF;
     else if (strcmp(str,"RTLSDR")==0)     ini->fend=FEND_RTLSDR;
+    else if (strcmp(str,"FILESTEREO")==0) ini->fend=FEND_FSTEREO;
+    else if (strcmp(str,"FILEGN3SV2")==0) ini->fend=FEND_FGN3SV2;
+    else if (strcmp(str,"FILEGN3SV3")==0) ini->fend=FEND_FGN3SV3;
+    else if (strcmp(str,"FILEBLADERF")==0) ini->fend=FEND_FBLADERF;
+    else if (strcmp(str,"FILERTLSDR")==0) ini->fend=FEND_FRTLSDR;
     else if (strcmp(str,"FILE")==0)       ini->fend=FEND_FILE;
     else { SDRPRINTF("error: wrong frontend type: %s\n",str); return -1; }
-    if (ini->fend==FEND_FILE||ini->fend==FEND_FILESTEREO) {
+    if (ini->fend==FEND_FILE    ||ini->fend==FEND_FSTEREO||
+        ini->fend==FEND_FGN3SV2 ||ini->fend==FEND_FGN3SV3||
+        ini->fend==FEND_FBLADERF||ini->fend==FEND_FRTLSDR) {
         readinistr(fendfile,"FEND","FILE1",ini->file1);
         if (strcmp(ini->file1,"")!=0) ini->useif1=ON;
     }
@@ -228,7 +234,7 @@ extern int chk_initvalue(sdrini_t *ini)
     }
 
     /* checking frequency input */
-    if(ini->useif2) {
+    if(ini->useif2||ini->fend==FEND_STEREO) {
         if ((ini->f_sf[1]<=0||ini->f_sf[1]>100e6) ||
             (ini->f_if[1]<0 ||ini->f_if[1]>100e6)) {
                 SDRPRINTF("error: wrong freq. input sf2: %.0f if2: %.0f\n",
@@ -246,7 +252,9 @@ extern int chk_initvalue(sdrini_t *ini)
     }
 
     /* checking filepath */
-    if(ini->fend==FEND_FILE||ini->fend==FEND_FILESTEREO) {
+    if (ini->fend==FEND_FILE   ||ini->fend==FEND_FSTEREO||
+        ini->fend==FEND_FGN3SV2||ini->fend==FEND_FGN3SV2||
+        ini->fend==FEND_FRTLSDR||ini->fend==FEND_FBLADERF) {
         if (ini->useif1&&((ret=GetFileAttributes(ini->file1))<0)){
             SDRPRINTF("error: file1 doesn't exist: %s\n",ini->file1);
             return -1;
@@ -347,22 +355,27 @@ extern int initpltstruct(sdrplt_t *acq, sdrplt_t *trk, sdrch_t *sdr)
         
         switch (sdrini.fend) {
             case FEND_GN3SV2:
-                scale=1.5; break;
             case FEND_GN3SV3:
+            case FEND_FGN3SV2:
+            case FEND_FGN3SV3:
                 scale=1.5; break;
             case FEND_BLADERF:
+            case FEND_FBLADERF:
                 scale=5.0; break;
             case FEND_RTLSDR:
+            case FEND_FRTLSDR:
                 scale=3.5; break;
         }
         setyrange(trk,0,sdr->trk.loopms*sdr->nsamp/4000*scale);
     }
 
-    if (sdrini.fend==FEND_FILE||sdrini.fend==FEND_FILESTEREO)
+    if (sdrini.fend==FEND_FILE||sdrini.fend==FEND_FSTEREO||
+        sdrini.fend==FEND_FGN3SV2||sdrini.fend==FEND_FGN3SV2||
+        sdrini.fend==FEND_FRTLSDR||sdrini.fend==FEND_FBLADERF) {
         trk->pltms=PLT_MS_FILE;
-    else
+    } else {
         trk->pltms=PLT_MS;
-
+    }
     return 0;
 }
 /* termination plot struct -----------------------------------------------------
@@ -679,6 +692,8 @@ extern int initsdrch(int chno, int sys, int prn, int ctype, int dtype,
         sprintf(sdr->satstr,"R%d",prn); /* frequency number instead of PRN */
         sdr->f_cf=FREQ1_GLO+DFRQ1_GLO*prn; /* FDMA */
         sdr->foffset=DFRQ1_GLO*prn; /* FDMA */
+    } else if (sdrini.fend==FEND_FRTLSDR) {
+        sdr->foffset=f_cf*sdrini.rtlsdrppmerr*1e-6;
     } else {
         sdr->f_cf=f_cf; /* carrier frequency */
         sdr->foffset=0.0; /* frequency offset */
