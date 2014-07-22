@@ -102,7 +102,7 @@ namespace gnsssdrgui {
     public: System::Windows::Forms::Button^  b_start;
     public: System::Windows::Forms::Button^  b_stop;
     public: System::Windows::Forms::Button^  b_exit;
-            
+
     public: radardlg^ radar;
     public: monitordlg^ monitor;
     public: trkprmdlg^ trkprm;
@@ -131,7 +131,7 @@ namespace gnsssdrgui {
 
 
     public: System::Windows::Forms::RadioButton^  rb_Q_FE1;
-public: System::Windows::Forms::GroupBox^  gb_glo;
+    public: System::Windows::Forms::GroupBox^  gb_glo;
 
 
     public: System::Windows::Forms::RadioButton^  rb_R_FE2;
@@ -168,7 +168,7 @@ public: System::Windows::Forms::GroupBox^  gb_glo;
 
 
     public: System::Windows::Forms::CheckBox^  chk_RALL;
-public: System::Windows::Forms::GroupBox^  gb_gal;
+    public: System::Windows::Forms::GroupBox^  gb_gal;
 
 
     public: System::Windows::Forms::RadioButton^  rb_E_FE2;
@@ -187,7 +187,7 @@ public: System::Windows::Forms::GroupBox^  gb_gal;
     public: System::Windows::Forms::CheckBox^  chk_TYPE_E1B;
 
     public: System::Windows::Forms::CheckBox^  chk_EALL;
-public: System::Windows::Forms::GroupBox^  gb_bds;
+    public: System::Windows::Forms::GroupBox^  gb_bds;
 
 
     public: System::Windows::Forms::RadioButton^  rb_C_FE2;
@@ -224,7 +224,7 @@ public: System::Windows::Forms::GroupBox^  gb_bds;
     public: System::Windows::Forms::CheckBox^  chk_TYPE_B1I;
 
     public: System::Windows::Forms::CheckBox^  chk_CALL;
-public: System::Windows::Forms::GroupBox^  gb_sbs;
+    public: System::Windows::Forms::GroupBox^  gb_sbs;
 
 
     public: System::Windows::Forms::RadioButton^  rb_S_FE2;
@@ -326,21 +326,21 @@ public: System::Windows::Forms::GroupBox^  gb_sbs;
     public: 
 
     public: System::Windows::Forms::Label^  label3;
-public: System::Windows::Forms::CheckBox^  chk_log;
-private: System::Windows::Forms::GroupBox^  gb_misc;
-public: 
-public: System::Windows::Forms::Label^  label10;
-private: 
-public: System::Windows::Forms::Label^  label9;
-public: System::Windows::Forms::TextBox^  tb_lon;
-public: System::Windows::Forms::TextBox^  tb_lat;
-public: System::Windows::Forms::Label^  label6;
-private: System::Windows::Forms::Button^  b_radar;
-public: 
+    public: System::Windows::Forms::CheckBox^  chk_log;
+    private: System::Windows::Forms::GroupBox^  gb_misc;
+    public: 
+    public: System::Windows::Forms::Label^  label10;
+    private: 
+    public: System::Windows::Forms::Label^  label9;
+    public: System::Windows::Forms::TextBox^  tb_lon;
+    public: System::Windows::Forms::TextBox^  tb_lat;
+    public: System::Windows::Forms::Label^  label6;
+    private: System::Windows::Forms::Button^  b_radar;
+    public: 
 
 
-private: 
-public: 
+    private: 
+    public: 
     private: 
     public: 
 
@@ -3148,7 +3148,7 @@ public:
                  }
              }
     private: System::Void comb_input_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-                 
+
                  config->tb_corrn="6";
                  config->tb_corrd="4";
                  config->tb_corrp="8";
@@ -3503,7 +3503,7 @@ public:
                      config->tb_dll2="1.0";
                      config->tb_pll2="10.0";
                      config->tb_fll2="50.0";
-                     
+
                      switch (cmb_input->SelectedIndex) {
                      case 0: /* STEREO */
                          cb_freq_stereo();
@@ -3563,7 +3563,11 @@ public:
                          cb_freq_all();
                          break;
                      }
+                 } else {
+                     saveform();
+                     WriteConfig();
                  }
+
                  loadform();
              }
     private: System::Void maindlg_FormClosing(System::Object^  sender, System::Windows::Forms::FormClosingEventArgs^  e) {
@@ -3624,7 +3628,7 @@ public:
     private: property String^ ConfigPath {
                  String^ get()
                  {
-                     return this->GetUserAppDataPath() + "\\" + "gnsssdrlib_v1.1.config";
+                     return this->GetUserAppDataPath() + "\\" + "gnsssdrlib_v2.0b.config";
                  }
              }
     public: bool WriteConfig(void)
@@ -3822,7 +3826,7 @@ public:
 
                 rb_spec1->Checked=config->rb_spec1;
                 rb_spec2->Checked=config->rb_spec2;
-                
+
                 tb_lat->Text=config->tb_lat;
                 tb_lon->Text=config->tb_lon;
 
@@ -4045,7 +4049,7 @@ public:
                  cb_cf1->Items->Add("1575.420 MHz(L1)");
                  cb_cf1->Items->Add("1561.098 MHz(B1)");
                  cb_cf1->Items->Add("1602.000 MHz(G1)");
-                 
+
                  cb_cf2->Items->Add("1575.420 MHz(L1)");
                  cb_cf2->Items->Add("1561.098 MHz(B1)");
                  cb_cf2->Items->Add("1602.000 MHz(G1)");
@@ -4061,7 +4065,7 @@ public:
     private: Void cb_freq_L1() {
                  cb_cf1->Items->Clear();
                  cb_cf2->Items->Clear();
-                 
+
                  cb_cf1->Items->Add("1575.420 MHz(L1)");
 
                  cb_cf1->SelectedIndex=0;
@@ -4069,7 +4073,7 @@ public:
     private: Void cb_freq_all() {
                  cb_cf1->Items->Clear();
                  cb_cf2->Items->Clear();
-                                  
+
                  cb_cf1->Items->Add("1575.420 MHz(L1)");
                  cb_cf1->Items->Add("1561.098 MHz(B1)");
                  cb_cf1->Items->Add("1602.000 MHz(G1)");
@@ -4078,7 +4082,7 @@ public:
                  cb_cf1->Items->Add("1278.750 MHz(L6)");
                  cb_cf1->Items->Add("1246.000 MHz(G2)");
                  cb_cf1->Items->Add("1207.140 MHz(B2)");
-                 
+
                  cb_cf2->Items->Add("1575.420 MHz(L1)");
                  cb_cf2->Items->Add("1561.098 MHz(B1)");
                  cb_cf2->Items->Add("1602.000 MHz(G1)");
@@ -4130,23 +4134,23 @@ public:
                  }
              }
     private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-                trkprm=gcnew trkprmdlg();
-                
-                trkprm->tb_corrn->Text=config->tb_corrn;
-                trkprm->tb_corrd->Text=config->tb_corrd;
-                trkprm->tb_corrp->Text=config->tb_corrp;
-                trkprm->tb_dll1->Text=config->tb_dll1;
-                trkprm->tb_pll1->Text=config->tb_pll1;
-                trkprm->tb_fll1->Text=config->tb_fll1;
-                trkprm->tb_dll2->Text=config->tb_dll2;
-                trkprm->tb_pll2->Text=config->tb_pll2;
-                trkprm->tb_fll2->Text=config->tb_fll2;
-                 
-                trkprm->Show();
-                trkprm->Owner = this;
+                 trkprm=gcnew trkprmdlg();
+
+                 trkprm->tb_corrn->Text=config->tb_corrn;
+                 trkprm->tb_corrd->Text=config->tb_corrd;
+                 trkprm->tb_corrp->Text=config->tb_corrp;
+                 trkprm->tb_dll1->Text=config->tb_dll1;
+                 trkprm->tb_pll1->Text=config->tb_pll1;
+                 trkprm->tb_fll1->Text=config->tb_fll1;
+                 trkprm->tb_dll2->Text=config->tb_dll2;
+                 trkprm->tb_pll2->Text=config->tb_pll2;
+                 trkprm->tb_fll2->Text=config->tb_fll2;
+
+                 trkprm->Show();
+                 trkprm->Owner = this;
              }
     private: System::Void cb_cf1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-                 
+
                  switch (cmb_input->SelectedIndex) {
                  case 0: /* STEREO */
                  case 5: /* FILE STEREO*/
@@ -4164,17 +4168,16 @@ public:
                      break;
                  }
              }
-private: System::Void b_radar_Click(System::Object^  sender, System::EventArgs^  e) {
-             String ^ url = "http://www.taroz.net/GNSS-Radar_sky.html"+
-                 "?lat="+tb_lat->Text+"&lon="+tb_lon->Text;
-             
-             radar=gcnew radardlg();
+    private: System::Void b_radar_Click(System::Object^  sender, System::EventArgs^  e) {
+                 String ^ url = "http://www.taroz.net/GNSS-Radar_sky.html"+
+                     "?lat="+tb_lat->Text+"&lon="+tb_lon->Text;
 
-             radar->wb_radar->Navigate(url);
-             radar->wb_radar->Refresh();
-             radar->Show();
-         }
+                 radar=gcnew radardlg();
 
-};
+                 radar->wb_radar->Navigate(url);
+                 radar->wb_radar->Refresh();
+                 radar->Show();
+             }
+
+    };
 }
-

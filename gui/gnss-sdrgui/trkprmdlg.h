@@ -3,41 +3,32 @@
 
 namespace gnsssdrgui {
 
-	using namespace System;
-	using namespace System::ComponentModel;
-	using namespace System::Collections;
-	using namespace System::Windows::Forms;
-	using namespace System::Data;
-	using namespace System::Drawing;
+    using namespace System;
+    using namespace System::ComponentModel;
+    using namespace System::Collections;
+    using namespace System::Windows::Forms;
+    using namespace System::Data;
+    using namespace System::Drawing;
 
-	/// <summary>
-	/// trkprm の概要
-	/// </summary>
-	public ref class trkprmdlg : public System::Windows::Forms::Form
-	{
-	public:
-		trkprmdlg(void)
-		{
-			InitializeComponent();
-			//
-			//TODO: ここにコンストラクター コードを追加します
-			//
-		}
+    public ref class trkprmdlg : public System::Windows::Forms::Form
+    {
+    public:
+        trkprmdlg(void)
+        {
+            InitializeComponent();
+        }
 
-	protected:
-		/// <summary>
-		/// 使用中のリソースをすべてクリーンアップします。
-		/// </summary>
-		~trkprmdlg()
-		{
-			if (components)
-			{
-				delete components;
-			}
-		}
+    protected:
+        ~trkprmdlg()
+        {
+            if (components)
+            {
+                delete components;
+            }
+        }
     public: System::Windows::Forms::GroupBox^  groupBox1;
     protected: 
-    
+
     public: SDR^ sdr;
     public: System::Windows::Forms::Label^  label5;
     public: System::Windows::Forms::Label^  label3;
@@ -71,20 +62,13 @@ namespace gnsssdrgui {
     public: System::Windows::Forms::Label^  label8;
     public: System::Windows::Forms::Label^  label9;
     public: System::Windows::Forms::TextBox^  tb_dll1;
-    
-	private:
-		/// <summary>
-		/// 必要なデザイナー変数です。
-		/// </summary>
-		System::ComponentModel::Container ^components;
+
+    private:
+        System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
-		/// <summary>
-		/// デザイナー サポートに必要なメソッドです。このメソッドの内容を
-		/// コード エディターで変更しないでください。
-		/// </summary>
-		void InitializeComponent(void)
-		{
+        void InitializeComponent(void)
+        {
             this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
             this->label5 = (gcnew System::Windows::Forms::Label());
             this->label3 = (gcnew System::Windows::Forms::Label());
@@ -162,6 +146,7 @@ namespace gnsssdrgui {
             this->tb_corrp->Name = L"tb_corrp";
             this->tb_corrp->Size = System::Drawing::Size(45, 19);
             this->tb_corrp->TabIndex = 6;
+            this->tb_corrp->Text = L"8";
             // 
             // label2
             // 
@@ -182,6 +167,7 @@ namespace gnsssdrgui {
             this->tb_corrd->Name = L"tb_corrd";
             this->tb_corrd->Size = System::Drawing::Size(45, 19);
             this->tb_corrd->TabIndex = 4;
+            this->tb_corrd->Text = L"4";
             // 
             // label1
             // 
@@ -202,6 +188,7 @@ namespace gnsssdrgui {
             this->tb_corrn->Name = L"tb_corrn";
             this->tb_corrn->Size = System::Drawing::Size(45, 19);
             this->tb_corrn->TabIndex = 2;
+            this->tb_corrn->Text = L"6";
             // 
             // label4
             // 
@@ -257,6 +244,7 @@ namespace gnsssdrgui {
             this->tb_fll2->Name = L"tb_fll2";
             this->tb_fll2->Size = System::Drawing::Size(45, 19);
             this->tb_fll2->TabIndex = 19;
+            this->tb_fll2->Text = L"50.0";
             // 
             // label13
             // 
@@ -277,6 +265,7 @@ namespace gnsssdrgui {
             this->tb_pll2->Name = L"tb_pll2";
             this->tb_pll2->Size = System::Drawing::Size(45, 19);
             this->tb_pll2->TabIndex = 17;
+            this->tb_pll2->Text = L"10.0";
             // 
             // label14
             // 
@@ -297,6 +286,7 @@ namespace gnsssdrgui {
             this->tb_dll2->Name = L"tb_dll2";
             this->tb_dll2->Size = System::Drawing::Size(45, 19);
             this->tb_dll2->TabIndex = 15;
+            this->tb_dll2->Text = L"1.0";
             // 
             // label12
             // 
@@ -328,6 +318,7 @@ namespace gnsssdrgui {
             this->tb_fll1->Name = L"tb_fll1";
             this->tb_fll1->Size = System::Drawing::Size(45, 19);
             this->tb_fll1->TabIndex = 12;
+            this->tb_fll1->Text = L"200.0";
             // 
             // label10
             // 
@@ -348,6 +339,7 @@ namespace gnsssdrgui {
             this->tb_pll1->Name = L"tb_pll1";
             this->tb_pll1->Size = System::Drawing::Size(45, 19);
             this->tb_pll1->TabIndex = 10;
+            this->tb_pll1->Text = L"30.0";
             // 
             // label6
             // 
@@ -390,6 +382,7 @@ namespace gnsssdrgui {
             this->tb_dll1->Name = L"tb_dll1";
             this->tb_dll1->Size = System::Drawing::Size(45, 19);
             this->tb_dll1->TabIndex = 2;
+            this->tb_dll1->Text = L"5.0";
             // 
             // trkprmdlg
             // 
@@ -422,5 +415,5 @@ namespace gnsssdrgui {
     private: System::Void trkprmdlg_Load(System::Object^  sender, System::EventArgs^  e) {
                  sdr=gcnew SDR();
              }
-};
+    };
 }

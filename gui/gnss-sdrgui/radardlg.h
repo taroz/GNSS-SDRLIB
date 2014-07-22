@@ -2,54 +2,38 @@
 
 namespace gnsssdrgui {
 
-	using namespace System;
-	using namespace System::ComponentModel;
-	using namespace System::Collections;
-	using namespace System::Windows::Forms;
-	using namespace System::Data;
-	using namespace System::Drawing;
+    using namespace System;
+    using namespace System::ComponentModel;
+    using namespace System::Collections;
+    using namespace System::Windows::Forms;
+    using namespace System::Data;
+    using namespace System::Drawing;
 
-	/// <summary>
-	/// radardlg の概要
-	/// </summary>
-	public ref class radardlg : public System::Windows::Forms::Form
-	{
-	public:
-		radardlg(void)
-		{
-			InitializeComponent();
-			//
-			//TODO: ここにコンストラクター コードを追加します
-			//
-		}
+    public ref class radardlg : public System::Windows::Forms::Form
+    {
+    public:
+        radardlg(void)
+        {
+            InitializeComponent();
+        }
 
-	protected:
-		/// <summary>
-		/// 使用中のリソースをすべてクリーンアップします。
-		/// </summary>
-		~radardlg()
-		{
-			if (components)
-			{
-				delete components;
-			}
-		}
+    protected:
+        ~radardlg()
+        {
+            if (components)
+            {
+                delete components;
+            }
+        }
     public: System::Windows::Forms::WebBrowser^  wb_radar;
     protected: 
 
-	private:
-		/// <summary>
-		/// 必要なデザイナー変数です。
-		/// </summary>
-		System::ComponentModel::Container ^components;
+    private:
+        System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
-		/// <summary>
-		/// デザイナー サポートに必要なメソッドです。このメソッドの内容を
-		/// コード エディターで変更しないでください。
-		/// </summary>
-		void InitializeComponent(void)
-		{
+        void InitializeComponent(void)
+        {
             this->wb_radar = (gcnew System::Windows::Forms::WebBrowser());
             this->SuspendLayout();
             // 
@@ -83,5 +67,5 @@ namespace gnsssdrgui {
 
         }
 #pragma endregion
-	};
+    };
 }
