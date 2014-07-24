@@ -3564,6 +3564,7 @@ namespace gnsssdrgui {
                          break;
                      }
                  } else {
+                     cmb_outint->SelectedIndex=0;
                      saveform();
                      WriteConfig();
                  }
