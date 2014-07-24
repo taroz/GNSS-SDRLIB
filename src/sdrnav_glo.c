@@ -46,7 +46,7 @@ void decode_g1s2(const uint8_t *buff, sdreph_t *eph)
     int oldiode=eph->geph.iode;
     
     eph->geph.svh   =getbitu(buff, 5, 1);
-    eph->geph.iode  =getbitu(buff, 9, 7)*15;
+    eph->geph.iode  =getbitu(buff, 9, 7);
     eph->geph.vel[1]=getbits_glo(buff,21,24)*P2_20*1000; /* km to m */
     eph->geph.acc[1]=getbits_glo(buff,45, 5)*P2_30*1000; /* km/s to m/s */
     eph->geph.pos[1]=getbits_glo(buff,50,27)*P2_11*1000; /* km/s^2 to m/s^2 */
@@ -106,7 +106,7 @@ void decode_g1s5(const uint8_t *buff, sdreph_t *eph)
     eph->cnt++;
 }
 /* convert glonass time to time  -----------------------------------------------
-* convert glonass time in ephemeris to gtime_t struct
+* convert glonass time in ephemeris to gtime_t struct (GPST)
 * args   : int      nt      I   current day
 *          int      n4      I   4 year interval
 *          int      h       I   hour
@@ -147,7 +147,7 @@ gtime_t glot2time(int nt, int n4, int h, int m, int s)
         }
     }
     ep[0]=year; ep[1]=mon; ep[2]=day;
-    return utc2gpst(epoch2time(ep)); /* convert to gtime_t */
+    return utc2gpst(epoch2time(ep)); /* convert to gtime_t in GPST */
 }
 /* merge ephmeris data ---------------------------------------------------------
 * merge separated ephmeris data to ephemeris struct
@@ -164,7 +164,8 @@ void merge_g1(sdreph_t *eph)
     eph->tow_gpst=time2gpst(eph->geph.tof,&eph->eph.week)+eph->s1cnt*2.0;
     eph->week_gpst=eph->eph.week;
     
-    ep[3]=0;ep[4]=eph->geph.iode-60*3;ep[5]=0; /* 3 hour bias in UTC-GPST */
+    time2epoch(eph->geph.tof,ep);
+    ep[3]=0;ep[4]=eph->geph.iode*15-60*3;ep[5]=0; /* 3 hour bias in UTC-GPST */
     eph->geph.toe=utc2gpst(epoch2time(ep)); /* time of ephemeris */
 }
 /* decode navigation data (GLONASS word) ---------------------------------------
