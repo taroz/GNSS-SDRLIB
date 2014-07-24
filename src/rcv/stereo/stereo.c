@@ -78,7 +78,7 @@ extern int stereo_initoptions(void)
     switch ((int)sdrini.f_cf[0]) {
         case (int)FREQ1:
             strcpy(max2769,STEREO_MAX2769_L1); break;
-        case (int)FREQ2_CMP:
+        case (int)FREQ1_CMP:
             strcpy(max2769,STEREO_MAX2769_B1); break;
         case (int)FREQ1_GLO:
             strcpy(max2769,STEREO_MAX2769_G1); break;
