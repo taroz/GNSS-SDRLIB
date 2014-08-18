@@ -153,13 +153,13 @@ extern "C" {
 #define ACQINTG_E1B   4                /* number of non-coherent integration */
 #define ACQINTG_B1I   10               /* number of non-coherent integration */
 #define ACQINTG_SBAS  10               /* number of non-coherent integration */
-#define ACQHBAND      10000            /* half width for doppler search (Hz) */
-#define ACQSTEP       200              /* doppler search frequency step (Hz) */
+#define ACQHBAND      7000             /* half width for doppler search (Hz) */
+#define ACQSTEP       250              /* doppler search frequency step (Hz) */
 #define ACQTH         2.5              /* acquisition threshold (peak ratio) */
 #define ACQSLEEP      2000             /* acquisition process interval (ms) */
 
 /* tracking setting */
-#define LOOP_L1CA     20               /* loop interval */
+#define LOOP_L1CA     10               /* loop interval */
 #define LOOP_G1       10               /* loop interval */
 #define LOOP_E1B      1                /* loop interval */
 #define LOOP_B1I      10               /* loop interval */
@@ -168,7 +168,7 @@ extern "C" {
 #define LOOP_LEX      4                /* loop interval */
 
 /* navigation parameter */
-#define NAVSYNCTH       10             /* navigation frame synch. threshold */
+#define NAVSYNCTH       50             /* navigation frame synch. threshold */
 /* GPS/QZSS L1CA */
 #define NAVRATE_L1CA    20             /* length (multiples of ranging code) */
 #define NAVFLEN_L1CA    300            /* navigation frame data (bits) */
@@ -427,6 +427,7 @@ typedef struct {
     double codeErr;      /* code tracking error */
     double carrNco;      /* carrier NCO */
     double carrErr;      /* carrier tracking error */
+    double freqErr;      /* frequencyr error in FLL */
     uint64_t buffloc;    /* current buffer location */
     double tow[OBSINTERPN]; /* time of week (s) */
     uint64_t codei[OBSINTERPN]; /* code phase (sample) */
@@ -666,8 +667,7 @@ extern int checkacquisition(double *P, sdrch_t *sdr);
 
 /* sdrtrk.c ------------------------------------------------------------------*/
 extern uint64_t sdrtracking(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt);
-extern void cumsumcorr(double *II, double *QQ, sdrtrk_t *trk, int polarity, 
-                       int flag1, int flag2);
+extern void cumsumcorr(sdrtrk_t *trk, int polarity, int flag1, int flag2);
 extern void pll(sdrch_t *sdr, sdrtrkprm_t *prm, double dt);
 extern void dll(sdrch_t *sdr, sdrtrkprm_t *prm, double dt);
 extern void setobsdata(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt, 
@@ -799,7 +799,7 @@ extern void tcpsvrclose(sdrsoc_t *soc);
 extern void sendrtcmnav(sdreph_t *eph, sdrsoc_t *soc);
 extern void sendrtcmobs(obsd_t *obsd, sdrsoc_t *soc, int nsat);
 extern void sendsbas(sdrsbas_t *sbas, sdrsoc_t *soc);
-extern void writelog(FILE *fp, sdrtrk_t *trk);
+extern void writelog(FILE *fp, sdrtrk_t *trk,sdrnav_t *nav);
 extern FILE* createlog(char *filename, sdrtrk_t *trk);
 extern void closelog(FILE *fp);
 

@@ -3149,12 +3149,12 @@ namespace gnsssdrgui {
              }
     private: System::Void comb_input_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
 
-                 config->tb_corrn="6";
+                 config->tb_corrn="5";
                  config->tb_corrd="4";
-                 config->tb_corrp="8";
+                 config->tb_corrp="4";
                  config->tb_dll1="5.0";
                  config->tb_pll1="30.0";
-                 config->tb_fll1="200.0";
+                 config->tb_fll1="250.0";
                  config->tb_dll2="1.0";
                  config->tb_pll2="10.0";
                  config->tb_fll2="50.0";
@@ -3494,12 +3494,12 @@ namespace gnsssdrgui {
 
                  if (ReadConfig() == true)
                  {
-                     config->tb_corrn="6";
+                     config->tb_corrn="5";
                      config->tb_corrd="4";
-                     config->tb_corrp="8";
+                     config->tb_corrp="4";
                      config->tb_dll1="5.0";
                      config->tb_pll1="30.0";
-                     config->tb_fll1="200.0";
+                     config->tb_fll1="250.0";
                      config->tb_dll2="1.0";
                      config->tb_pll2="10.0";
                      config->tb_fll2="50.0";
@@ -3597,7 +3597,7 @@ namespace gnsssdrgui {
                     this->Invoke(gcnew guistopdelegate(this,&maindlg::guistop));
                     return;
                 }
-                Sleep(500);
+                sleepms(500);
                 b_stop->Enabled=false;
                 b_start->Enabled=true;
                 gb_input->Enabled=true;

@@ -286,12 +286,10 @@ extern void *sdrthread(void *arg)
 
                 /* correlation output accumulation */
                 if (!sdr->nav.flagsync) {
-                    cumsumcorr(sdr->trk.II,sdr->trk.QQ,&sdr->trk,
-                        1,sdr->nav.flagsync,swreset);
+                    cumsumcorr(&sdr->trk,1,sdr->nav.flagsync,swreset);
                 } else {
-                    cumsumcorr(sdr->trk.II,sdr->trk.QQ,&sdr->trk,
-                        sdr->nav.ocode[sdr->nav.ocodei],sdr->nav.flagsync,
-                        swreset);
+                    cumsumcorr(&sdr->trk,sdr->nav.ocode[sdr->nav.ocodei],
+                        sdr->nav.flagsync,swreset);
                 }
                 if (!sdr->nav.flagsync) {
                     pll(sdr,&sdr->trk.prm1,sdr->ctime); /* PLL */
@@ -332,7 +330,7 @@ extern void *sdrthread(void *arg)
                     SDRPRINTF("process %d sec...\n",(int)cnt/(1000));
 
                 /* write tracking log */
-                if (sdrini.log) writelog(fp,&sdr->trk);
+                if (sdrini.log) writelog(fp,&sdr->trk,&sdr->nav);
 
                 cnt++;
                 cntsw++;

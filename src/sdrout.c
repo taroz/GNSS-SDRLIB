@@ -402,15 +402,18 @@ void writelog_header(FILE *fp, sdrtrk_t *trk)
     for (i=0;i<2*trk->corrn+1;i++) fprintf(fp,",I(%d)",(int)trk->corrx[i]);
     fprintf(fp,",Code Freq,Code Err,Code NCO");
     fprintf(fp,",Carr Freq,Carr Err,Carr NCO");
+    fprintf(fp,",Freq Err");
+    fprintf(fp,",Flag Sync,Flag Syncf,Flag TOW,Flag Dec");
     fprintf(fp,"\n");
 }
 /* write log to file -----------------------------------------------------------
 * write tracking log to file
 * args   : FILE     *fp     I   file pointer
 *          sdrtrk_t *trk    I   sdr tracking struct
+*          sdrnav_t *nav    I   sdr navigation struct
 * return : none
 *-----------------------------------------------------------------------------*/
-extern void writelog(FILE *fp, sdrtrk_t *trk)
+extern void writelog(FILE *fp, sdrtrk_t *trk,sdrnav_t *nav)
 {
     int i;
 #ifdef WIN32
@@ -423,6 +426,9 @@ extern void writelog(FILE *fp, sdrtrk_t *trk)
     for (i=0;i<2*trk->corrn+1;i++) fprintf(fp,",%f",trk->II[i]);
     fprintf(fp,",%f,%f,%f",trk->codefreq,trk->codeErr,trk->codeNco);
     fprintf(fp,",%f,%f,%f",trk->carrfreq,trk->carrErr,trk->carrNco);
+    fprintf(fp,",%f",trk->freqErr);
+    fprintf(fp,",%d,%d,%d,%d",
+        nav->flagsync,nav->flagsyncf,nav->flagtow,nav->flagdec);
     fprintf(fp,"\n");
 }
 /* create log file -------------------------------------------------------------

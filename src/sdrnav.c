@@ -27,7 +27,7 @@ extern void sdrnavigation(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt)
         sdr->nav.flagsync=ON;
     }
     /* check bit synchronization */
-    if (!sdr->nav.flagsync&&cnt>1000)
+    if (!sdr->nav.flagsync&&cnt>3000)
         sdr->nav.flagsync=checksync(sdr->trk.II[0],sdr->trk.oldI[0],&sdr->nav);
     
     if (sdr->nav.flagsync) {
