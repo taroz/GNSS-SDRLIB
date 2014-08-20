@@ -166,20 +166,26 @@ extern void setobsdata(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt,
     trk->remcout[0]=trk->oldremcode*sdr->f_sf/trk->codefreq;
 
     /* doppler */
-    trk->D[0]=trk->carrfreq-sdr->f_if-sdr->foffset;
+    trk->D[0]=-(trk->carrfreq-sdr->f_if-sdr->foffset);
 
     /* carrier phase */
     if (!trk->flagremcarradd) {
-        trk->L[0]+=trk->remcarr/DPI;
-        trk->flagpolarityadd=ON;
+        trk->L[0]-=trk->remcarr/DPI;
+        SDRPRINTF("%s cnt=%llu inicarrier=%f m\n",sdr->satstr,cnt,CLIGHT/FREQ1*trk->remcarr/DPI);
+        trk->flagremcarradd=ON;
     }
 
     if (sdr->nav.flagsyncf&&!trk->flagpolarityadd) {
-        if (sdr->nav.polarity==-1) { trk->L[0]+=0.5; }
+        if (sdr->nav.polarity==1) {
+            trk->L[0]+=0.5;
+            SDRPRINTF("%s cnt=%llu polarity=0.5\n",sdr->satstr,cnt);
+        } else {
+            SDRPRINTF("%s cnt=%llu polarity=0.0\n",sdr->satstr,cnt);
+        }
         trk->flagpolarityadd=ON;
     }
 
-    trk->L[0]+=trk->D[0]*(double)trk->loopms/1000; 
+    trk->L[0]+=trk->D[0]*(trk->loopms*sdr->currnsamp/sdr->f_sf);
 
     trk->Isum+=fabs(trk->sumI[0]);
     if (snrflag) {
