@@ -208,7 +208,7 @@ extern "C" {
 
 /* observation data generation */
 #define PTIMING       68.802           /* pseudo range generation timing (ms) */
-#define OBSINTERPN    40               /* # of obs. stock for interpolation */
+#define OBSINTERPN    80               /* # of obs. stock for interpolation */
 #define SNSMOOTHMS    100              /* SNR smoothing interval (ms) */
 
 /* code generation parameter */

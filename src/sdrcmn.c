@@ -749,7 +749,7 @@ extern double meanvd(const double *data, int n, int exinds, int exinde)
 extern double interp1(double *x, double *y, int n, double t)
 {
     int i,j,k,m;
-    double z,s;
+    double z,s,*xx,*yy;
     z=0.0;
     if(n<1) return(z);
     if(n==1) {z=y[0];return(z);}
@@ -757,26 +757,41 @@ extern double interp1(double *x, double *y, int n, double t)
         z=(y[0]*(t-x[1])-y[1]*(t-x[0]))/(x[0]-x[1]);
         return(z);
     }
-    if(t<=x[1]) {k=0;m=2;}
-    else if(t>=x[n-2]) {k=n-3;m=n-1;}
+
+    xx=(double*)malloc(sizeof(double)*n);
+    yy=(double*)malloc(sizeof(double)*n);
+    if (x[0]>x[n-1]) {
+        for (j=n-1,k=0;j>=0;j--,k++) {
+            xx[k]=x[j];
+            yy[k]=y[j];
+        }
+    } else {
+        memcpy(xx,x,sizeof(double)*n);
+        memcpy(yy,y,sizeof(double)*n);
+    }
+
+    if(t<=xx[1]) {k=0;m=2;}
+    else if(t>=xx[n-2]) {k=n-3;m=n-1;}
     else {
         k=1;m=n;
         while (m-k!=1) {
             i=(k+m)/2;
-            if (t<x[i-1]) m=i;
+            if (t<xx[i-1]) m=i;
             else k=i;
         }
         k=k-1; m=m-1;
-        if(fabs(t-x[k])<fabs(t-x[m])) k=k-1;
+        if(fabs(t-xx[k])<fabs(t-xx[m])) k=k-1;
         else m=m+1;
     }
     z=0.0;
     for (i=k;i<=m;i++) {
         s=1.0;
         for (j=k;j<=m;j++)
-            if (j!=i) s=s*(t-x[j])/(x[i]-x[j]);
-        z=z+s*y[i];
+            if (j!=i) s=s*(t-xx[j])/(xx[i]-xx[j]);
+        z=z+s*yy[i];
     }
+
+    free(xx); free(yy);
     return z;
 }
 /* convert uint64_t to double --------------------------------------------------
@@ -819,7 +834,7 @@ extern void shiftright(void *dst, void *src, size_t size, int n)
     tmp=malloc(size*n);
     if (tmp!=NULL) {
         memcpy(tmp,src,size*n);
-        memcpy(dst,tmp,size*(n-1));
+        memcpy(dst,tmp,size*n);
         free(tmp);
     }
 }
