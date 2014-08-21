@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------
-* sdrfunc.c : SDR common functions
+* sdrcmn.c : SDR common functions
 *
 * Copyright (C) 2014 Taro Suzuki <gnsssdrlib@gmail.com>
 * Copyright (C) 2014 T. Takasu <http://www.rtklib.com>
@@ -10,7 +10,11 @@
 #define CMASK         0x1F             /* carrier lookup table mask */
 #define CSCALE        (1.0/32.0)       /* carrier lookup table scale (LSB) */
 
-/* sleep us ------------------------------------------------------------------*/
+/* get full path from relative path --------------------------------------------
+* args   : char *relpath    I   relative path
+*          char *fullpath   O   full path
+* return : int                  0:success, -1:failure 
+*-----------------------------------------------------------------------------*/
 extern int getfullpath(char *relpath, char *abspath)
 {
 #ifdef WIN32
@@ -25,25 +29,6 @@ extern int getfullpath(char *relpath, char *abspath)
     }
 #endif
     return 0;
-}
-/* sleep us ------------------------------------------------------------------*/
-extern void sleepus(int usec)
-{
-#ifdef WIN32
-    struct timeval tv;
-    fd_set dummy;
-    SOCKET s = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    FD_ZERO(&dummy);
-    FD_SET(s, &dummy);
-    tv.tv_sec=usec/1000000L;
-    tv.tv_usec=usec%1000000L;
-    select(0,0,0,&dummy, &tv);
-    closesocket(s);
-#else
-    struct timespec tp={0},tr;
-    tp.tv_nsec=usec*1000;
-    nanosleep(&tp,&tr);
-#endif
 }
 /* calculation log2(x) ---------------------------------------------------------
 * args   : double x         I   x data
@@ -121,24 +106,21 @@ extern void cpxfree(cpx_t *cpx)
 *          int    n         I   number of input/output data
 * return : none
 *-----------------------------------------------------------------------------*/
-#define TEST
 extern void cpxfft(fftwf_plan plan, cpx_t *cpx, int n)
 {
-#ifdef TEST    
+#ifdef FFTMTX
+        mlock(hfftmtx);
+#endif
     if (plan==NULL) {
-        mlock(hfftmtx); 
         fftwf_plan_with_nthreads(NFFTTHREAD); /* fft execute in multi threads */
         plan=fftwf_plan_dft_1d(n,cpx,cpx,FFTW_FORWARD,FFTW_ESTIMATE);
         fftwf_execute_dft(plan,cpx,cpx); /* fft */
         fftwf_destroy_plan(plan);
-        unmlock(hfftmtx);
     } else {
         fftwf_execute_dft(plan,cpx,cpx); /* fft */
     }
-#else
-    sfft_plan *p;
-    p=sfft_make_plan(n, 50, SFFT_VERSION_3, FFTW_ESTIMATE);
-    sfft_exec(p, cpx, cpx);
+#ifdef FFTMTX
+        unmlock(hfftmtx);
 #endif
 }
 /* complex IFFT ----------------------------------------------------------------
@@ -150,16 +132,21 @@ extern void cpxfft(fftwf_plan plan, cpx_t *cpx, int n)
 *-----------------------------------------------------------------------------*/
 extern void cpxifft(fftwf_plan plan, cpx_t *cpx, int n)
 {
+#ifdef FFTMTX
+        mlock(hfftmtx);
+#endif
     if (plan==NULL) {
-        mlock(hfftmtx); 
         fftwf_plan_with_nthreads(NFFTTHREAD); /* fft execute in multi threads */
         plan=fftwf_plan_dft_1d(n,cpx,cpx,FFTW_BACKWARD,FFTW_ESTIMATE);
         fftwf_execute_dft(plan,cpx,cpx); /* fft */
         fftwf_destroy_plan(plan);
-        unmlock(hfftmtx);
     } else {
         fftwf_execute_dft(plan,cpx,cpx); /* fft */
     }
+#ifdef FFTMTX
+        unmlock(hfftmtx);
+#endif
+
 }
 /* convert short vector to complex vector --------------------------------------
 * cpx=complex(I,Q)

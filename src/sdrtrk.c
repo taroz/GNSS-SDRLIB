@@ -47,7 +47,7 @@ extern uint64_t sdrtracking(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt)
 
         sdr->flagtrk=ON;
     } else {
-        sleepus(200);
+        sleepms(1);
     }
     sdrfree(data);
     return bufflocnow;
