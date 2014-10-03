@@ -36,6 +36,7 @@
 #include <process.h>
 #include <shlwapi.h>
 #include <shlobj.h>
+#include <locale.h>
 #pragma comment(lib,"winmm.lib")
 #pragma comment(lib,"ws2_32.lib")
 #pragma comment(lib,"shell32.lib")

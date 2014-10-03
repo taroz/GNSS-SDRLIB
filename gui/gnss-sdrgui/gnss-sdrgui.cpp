@@ -3,6 +3,7 @@ using namespace gnsssdrgui;
 
 /* set sdr initialize struct function */
 void setsdrini(bool bsat, int sat, int sys, int ftype, bool L1, bool sbas, bool lex, sdrini_t *ini);
+double str2double(String^value, char split);
 
 [STAThreadAttribute]
 int main(array<System::String ^> ^args)
@@ -19,7 +20,12 @@ System::Void SDR::start(System::Object^ obj)
     int i=0;
     sdrini_t sdrini={0};
     maindlg^form=(maindlg^)obj;
-    char *str;
+    char *str,split;
+    struct lconv *lc;
+    
+    setlocale( LC_ALL, ".ACP" );
+    lc=localeconv();
+    split=lc->decimal_point[0];
 
     /* reciver setting */
     str=(char*)(void*)Marshal::StringToHGlobalAnsi(form->tb_input1->Text);
@@ -27,10 +33,10 @@ System::Void SDR::start(System::Object^ obj)
     str=(char*)(void*)Marshal::StringToHGlobalAnsi(form->tb_input2->Text);
     memcpy(sdrini.file2,str,strlen(str));
     sdrini.fend=form->cmb_input->SelectedIndex;
-    sdrini.f_sf[0]=Convert::ToDouble(form->tb_f1sf->Text)*1e6;
-    sdrini.f_sf[1]=Convert::ToDouble(form->tb_f2sf->Text)*1e6;
-    sdrini.f_if[0]=Convert::ToDouble(form->tb_f1if->Text)*1e6;
-    sdrini.f_if[1]=Convert::ToDouble(form->tb_f2if->Text)*1e6;
+    sdrini.f_sf[0]=str2double(form->tb_f1sf->Text,split)*1e6;
+    sdrini.f_sf[1]=str2double(form->tb_f2sf->Text,split)*1e6;
+    sdrini.f_if[0]=str2double(form->tb_f1if->Text,split)*1e6;
+    sdrini.f_if[1]=str2double(form->tb_f2if->Text,split)*1e6;
     sdrini.useif1=1;
     sdrini.useif2=(int)form->chk_input2->Checked;
     sdrini.dtype[0]=(int)form->rb_f1IQ->Checked+1;
@@ -38,14 +44,14 @@ System::Void SDR::start(System::Object^ obj)
 
     if (form->cb_cf1->SelectedIndex>=0) {
         array<String^,1>^str1=form->cb_cf1->Items[form->cb_cf1->SelectedIndex]->ToString()->Split(' ',0);
-        sdrini.f_cf[0]=Convert::ToDouble(str1[0])*1e6;
+        sdrini.f_cf[0]=str2double(str1[0],split)*1e6;
     } else {
         sdrini.f_cf[0]=0.0;
     }
 
     if (form->cb_cf2->SelectedIndex>=0) {
         array<String^,1>^str2=form->cb_cf2->Items[form->cb_cf2->SelectedIndex]->ToString()->Split(' ',0);
-        sdrini.f_cf[1]=Convert::ToDouble(str2[0])*1e6;
+        sdrini.f_cf[1]=str2double(str2[0],split)*1e6;
     } else {
         sdrini.f_cf[1]=0.0;
     }
@@ -55,12 +61,12 @@ System::Void SDR::start(System::Object^ obj)
     sdrini.trkcorrn=Convert::ToInt32(form->config->tb_corrn);
     sdrini.trkcorrd=Convert::ToInt32(form->config->tb_corrd);
     sdrini.trkcorrp=Convert::ToInt32(form->config->tb_corrp);
-    sdrini.trkdllb[0]=Convert::ToDouble(form->config->tb_dll1);
-    sdrini.trkdllb[1]=Convert::ToDouble(form->config->tb_dll2);
-    sdrini.trkpllb[0]=Convert::ToDouble(form->config->tb_pll1);
-    sdrini.trkpllb[1]=Convert::ToDouble(form->config->tb_pll2);
-    sdrini.trkfllb[0]=Convert::ToDouble(form->config->tb_fll1);
-    sdrini.trkfllb[1]=Convert::ToDouble(form->config->tb_fll2);
+    sdrini.trkdllb[0]=str2double(form->config->tb_dll1,split);
+    sdrini.trkdllb[1]=str2double(form->config->tb_dll2,split);
+    sdrini.trkpllb[0]=str2double(form->config->tb_pll1,split);
+    sdrini.trkpllb[1]=str2double(form->config->tb_pll2,split);
+    sdrini.trkfllb[0]=str2double(form->config->tb_fll1,split);
+    sdrini.trkfllb[1]=str2double(form->config->tb_fll2,split);
 
     /* channel setting */ /* GPS */
     setsdrini(form->chk_G01->Checked, 1,SYS_GPS,form->rb_G_FE2->Checked,form->chk_TYPE_L1CA->Checked,false,false,&sdrini);
@@ -259,6 +265,12 @@ void setsdrini(bool bsat, int prn, int sys, int ftype, bool L1, bool sbas, bool 
         }
     }
 }
+
+double str2double(String^value, char split)
+{
+    return Convert::ToDouble(value->Replace('.', split));
+}
+
 /* sdr stop function */
 System::Void SDR::stop(System::Object^ obj)
 {
