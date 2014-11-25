@@ -22,12 +22,12 @@ extern void sdrnavigation(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt)
 
     /* navigation bit synchronization */
     /* if synchronization does not need (NH20 case) */
-    if (sdr->nav.rate==1) {
+    if (sdr->nav.rate==1&&cnt>2000/(sdr->ctime*1000)) {
         sdr->nav.synci=0;
         sdr->nav.flagsync=ON;
     }
     /* check bit synchronization */
-    if (!sdr->nav.flagsync&&cnt>3000)
+    if (!sdr->nav.flagsync&&cnt>2000/(sdr->ctime*1000))
         sdr->nav.flagsync=checksync(sdr->trk.II[0],sdr->trk.oldI[0],&sdr->nav);
     
     if (sdr->nav.flagsync) {
@@ -391,7 +391,7 @@ extern int findpreamble(sdrnav_t *nav)
         for (i=0;i<nav->prelen;i++)
             corr+=(nav->fbitsdec[nav->flen-nav->prelen+i]*nav->prebits[i]);
     }
-    /* GAL E1B */
+    /* Galileo E1B */
     /* check preambles in two words */
     if (nav->ctype==CTYPE_E1B) {
         for (i=0;i<nav->prelen;i++)

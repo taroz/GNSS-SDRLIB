@@ -1094,8 +1094,8 @@ extern void pcorrelator(const char *data, int dtype, double ti, int n,
     char *dataR;
 
     if (!(dataR=(char  *)sdrmalloc(sizeof(char )*m*dtype))||
-        !(dataI=(short *)sdrmalloc(sizeof(short)*m))||
-        !(dataQ=(short *)sdrmalloc(sizeof(short)*m))||
+        !(dataI=(short *)sdrmalloc(sizeof(short)*(m+64)))||
+        !(dataQ=(short *)sdrmalloc(sizeof(short)*(m+64)))||
         !(datax=cpxmalloc(m))) {
             SDRPRINTF("error: pcorrelator memory allocation\n");
             return;

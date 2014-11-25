@@ -366,7 +366,7 @@ extern int initpltstruct(sdrplt_t *acq, sdrplt_t *trk, sdrch_t *sdr)
             case FEND_FRTLSDR:
                 scale=3.5; break;
         }
-        setyrange(trk,0,sdr->trk.loopms*sdr->nsamp/4000*scale);
+        setyrange(trk,0,sdr->trk.loop*sdr->nsamp/4000*scale);
     }
 
     if (sdrini.fend==FEND_FILE||sdrini.fend==FEND_FSTEREO||

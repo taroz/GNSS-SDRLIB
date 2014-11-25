@@ -61,17 +61,9 @@ extern uint64_t sdrtracking(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt)
 *          int    flag2     I   reset flag 2
 * return : none
 *-----------------------------------------------------------------------------*/
-extern void cumsumcorr(sdrtrk_t *trk, int polarity, int flag1, int flag2)
+extern void cumsumcorr(sdrtrk_t *trk, int polarity)
 {
     int i;
-    if (!flag1||(flag1&&flag2)) {
-        for (i=0;i<1+2*trk->corrn;i++) {
-            trk->oldsumI[i]=0;
-            trk->oldsumQ[i]=0;
-            trk->sumI[i]=0;
-            trk->sumQ[i]=0;
-        }
-    }
     for (i=0;i<1+2*trk->corrn;i++) {
         trk->II[i]*=polarity;
         trk->QQ[i]*=polarity;
@@ -80,6 +72,16 @@ extern void cumsumcorr(sdrtrk_t *trk, int polarity, int flag1, int flag2)
         trk->oldsumQ[i]+=trk->oldQ[i];
         trk->sumI[i]+=trk->II[i];
         trk->sumQ[i]+=trk->QQ[i];
+    }
+}
+extern void clearcumsumcorr(sdrtrk_t *trk)
+{
+    int i;
+    for (i=0;i<1+2*trk->corrn;i++) {
+        trk->oldsumI[i]=0;
+        trk->oldsumQ[i]=0;
+        trk->sumI[i]=0;
+        trk->sumQ[i]=0;
     }
 }
 /* phase/frequency lock loop ---------------------------------------------------
@@ -94,22 +96,28 @@ extern void pll(sdrch_t *sdr, sdrtrkprm_t *prm, double dt)
     double carrErr,freqErr;
     double IP=sdr->trk.sumI[0],QP=sdr->trk.sumQ[0];
     double oldIP=sdr->trk.oldsumI[0],oldQP=sdr->trk.oldsumQ[0];
-    double dot,cross;
-    double flag=-1.0;
+    double f1,f2;
 
-    if (sdr->sys==SYS_CMP) {
-        flag=1.0;
-    }
+    /* PLL discriminator */
+    if (IP>0)
+        carrErr=atan2(QP,IP)/PI;
+    else
+        carrErr=atan2(-QP,-IP)/PI;
 
-    dot=IP*oldIP+QP*oldQP;
-    cross=IP*oldQP-oldIP*QP;
+    /* FLL discriminator */
+    f1=(IP==0)?    PI/2:atan(QP/IP);
+    f2=(oldIP==0)? PI/2:atan(oldQP/oldIP);
+    freqErr=f1-f2;
 
-    carrErr=atan(QP/IP)/DPI;
-    freqErr=atan2(cross,dot)/PI;
+    if (freqErr>PI/2)
+        freqErr = PI-freqErr;
+    if (freqErr<-PI/2)
+        freqErr = -PI-freqErr;
+    //freqErr/=DPI;
 
     /* 2nd order PLL with 1st order FLL */
     sdr->trk.carrNco+=prm->pllaw*(carrErr-sdr->trk.carrErr)+
-        prm->pllw2*dt*carrErr+flag*prm->fllw*dt*freqErr;
+        prm->pllw2*dt*carrErr+prm->fllw*dt*freqErr;
 
     sdr->trk.carrfreq=sdr->acq.acqfreq+sdr->trk.carrNco;
     sdr->trk.carrErr=carrErr;

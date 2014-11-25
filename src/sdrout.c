@@ -398,12 +398,12 @@ extern void sendsbas(sdrsbas_t *sbas, sdrsoc_t *soc)
 void writelog_header(FILE *fp, sdrtrk_t *trk)
 {
     int i;
-    fprintf(fp,"Cnt,Tow,IP,QP");
+    fprintf(fp,"Cnt,Tow,IP,QP,sumI,sumQ");
     for (i=0;i<2*trk->corrn+1;i++) fprintf(fp,",I(%d)",(int)trk->corrx[i]);
     fprintf(fp,",Code Freq,Code Err,Code NCO");
     fprintf(fp,",Carr Freq,Carr Err,Carr NCO");
     fprintf(fp,",Freq Err,Carrier Phase");
-    fprintf(fp,",Flag Sync,Flag Syncf,Flag TOW,Flag Dec");
+    fprintf(fp,",Flag Sync,Flag Syncf,Flag TOW,Flag Dec,Flag Loopfilter,swsync");
     fprintf(fp,"\n");
 }
 /* write log to file -----------------------------------------------------------
@@ -423,12 +423,14 @@ extern void writelog(FILE *fp, sdrtrk_t *trk,sdrnav_t *nav)
     fprintf(fp,"%"PRIu64",%f,%f,%f",
         trk->cntout[0],trk->tow[0],trk->II[0],trk->QQ[0]);
 #endif
+    fprintf(fp,",%f,%f",trk->sumI[0],trk->sumQ[0]);
     for (i=0;i<2*trk->corrn+1;i++) fprintf(fp,",%f",trk->II[i]);
     fprintf(fp,",%f,%f,%f",trk->codefreq,trk->codeErr,trk->codeNco);
     fprintf(fp,",%f,%f,%f",trk->carrfreq,trk->carrErr,trk->carrNco);
     fprintf(fp,",%f,%f",trk->freqErr,trk->L[0]);
-    fprintf(fp,",%d,%d,%d,%d",
-        nav->flagsync,nav->flagsyncf,nav->flagtow,nav->flagdec);
+    fprintf(fp,",%d,%d,%d,%d,%d,%d",
+        nav->flagsync,nav->flagsyncf,nav->flagtow,nav->flagdec,
+        trk->flagloopfilter,nav->swsync);
     fprintf(fp,"\n");
 }
 /* create log file -------------------------------------------------------------

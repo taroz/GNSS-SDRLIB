@@ -50,7 +50,7 @@ extern uint64_t sdraccuisition(sdrch_t *sdr, double *power)
     /* set acquisition result */
     if (sdr->flagacq) {
         /* set buffer location at top of code */
-        buffloc+=-i*sdr->nsamp+sdr->acq.acqcodei;
+        buffloc+=-(i+1)*sdr->nsamp+sdr->acq.acqcodei;
         sdr->trk.carrfreq=sdr->acq.acqfreq;
         sdr->trk.codefreq=sdr->crate;
     }

@@ -155,8 +155,8 @@ extern "C" {
 #define ACQINTG_B1I   10               /* number of non-coherent integration */
 #define ACQINTG_SBAS  10               /* number of non-coherent integration */
 #define ACQHBAND      7000             /* half width for doppler search (Hz) */
-#define ACQSTEP       250              /* doppler search frequency step (Hz) */
-#define ACQTH         2.5              /* acquisition threshold (peak ratio) */
+#define ACQSTEP       200              /* doppler search frequency step (Hz) */
+#define ACQTH         3.0              /* acquisition threshold (peak ratio) */
 #define ACQSLEEP      2000             /* acquisition process interval (ms) */
 
 /* tracking setting */
@@ -259,7 +259,7 @@ extern "C" {
 #define PLT_MW        100              /* margin (pixel) */
 #define PLT_MH        20                /* margin (pixel) */
 #define PLT_MS        200              /* plotting interval (ms) */
-#define PLT_MS_FILE   1000               /* plotting interval (ms) */
+#define PLT_MS_FILE   200               /* plotting interval (ms) */
 
 /* spectrum analysis */
 #define SPEC_MS       200              /* plotting interval (ms) */
@@ -451,6 +451,7 @@ typedef struct {
     int loopms;          /* loop filter interval (ms) */
     int flagpolarityadd; /* polarity (half cycle ambiguity) add flag */
     int flagremcarradd;  /* remained carrier phase add flag */
+    int flagloopfilter;  /* loop filter update flag */
     int corrn;           /* number of correlation points */
     int *corrp;          /* correlation points (sample) */
     double *corrx;       /* correlation points (for plotting) */
@@ -668,7 +669,8 @@ extern int checkacquisition(double *P, sdrch_t *sdr);
 
 /* sdrtrk.c ------------------------------------------------------------------*/
 extern uint64_t sdrtracking(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt);
-extern void cumsumcorr(sdrtrk_t *trk, int polarity, int flag1, int flag2);
+extern void cumsumcorr(sdrtrk_t *trk, int polarity);
+extern void clearcumsumcorr(sdrtrk_t *trk);
 extern void pll(sdrch_t *sdr, sdrtrkprm_t *prm, double dt);
 extern void dll(sdrch_t *sdr, sdrtrkprm_t *prm, double dt);
 extern void setobsdata(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt, 

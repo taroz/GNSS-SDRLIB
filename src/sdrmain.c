@@ -237,7 +237,6 @@ extern void *sdrthread(void *arg)
     sdrch_t *sdr=(sdrch_t*)arg;
     sdrplt_t pltacq={0},plttrk={0};
     uint64_t buffloc=0,bufflocnow=0,cnt=0,loopcnt=0;
-    int cntsw=0,swsync,swreset;
     double *acqpower=NULL;
     FILE* fp=NULL;
     char fname[100];
@@ -278,26 +277,20 @@ extern void *sdrthread(void *arg)
         if (sdr->flagacq) {
             bufflocnow=sdrtracking(sdr,buffloc,cnt);
             if (sdr->flagtrk) {
-                if (sdr->nav.swsync) cntsw=0;
-                if ((cntsw%sdr->trk.loop)==0) swsync=ON;
-                else swsync=OFF;
-                if (((cntsw-1)%sdr->trk.loop)==0) swreset=ON;
-                else swreset=OFF;
-
+                
                 /* correlation output accumulation */
-                if (!sdr->nav.flagsync) {
-                    cumsumcorr(&sdr->trk,1,sdr->nav.flagsync,swreset);
-                } else {
-                    cumsumcorr(&sdr->trk,sdr->nav.ocode[sdr->nav.ocodei],
-                        sdr->nav.flagsync,swreset);
-                }
+                cumsumcorr(&sdr->trk,sdr->nav.ocode[sdr->nav.ocodei]);
+
+                sdr->trk.flagloopfilter=0;
                 if (!sdr->nav.flagsync) {
                     pll(sdr,&sdr->trk.prm1,sdr->ctime); /* PLL */
                     dll(sdr,&sdr->trk.prm1,sdr->ctime); /* DLL */
+                    sdr->trk.flagloopfilter=1;
                 }
-                else if (swsync) {
+                else if (sdr->nav.swsync) {
                     pll(sdr,&sdr->trk.prm2,(double)sdr->trk.loopms/1000);
                     dll(sdr,&sdr->trk.prm2,(double)sdr->trk.loopms/1000);
+                    sdr->trk.flagloopfilter=2;
 
                     mlock(hobsmtx);
 
@@ -321,7 +314,7 @@ extern void *sdrthread(void *arg)
                 }
 
                 /* LEX thread */
-                if ((cntsw%LEXMS)==0) {
+                if (((loopcnt-1)%LEXMS)==0) {
                     if (sdrini.nchL6!=0&&sdr->no==sdrini.nch+1&&loopcnt>1000) 
                         setevent(hlexeve);
                 }
@@ -332,8 +325,8 @@ extern void *sdrthread(void *arg)
                 /* write tracking log */
                 if (sdrini.log) writelog(fp,&sdr->trk,&sdr->nav);
 
+                if (sdr->trk.flagloopfilter) clearcumsumcorr(&sdr->trk);
                 cnt++;
-                cntsw++;
                 buffloc+=sdr->currnsamp;
             }
         }
