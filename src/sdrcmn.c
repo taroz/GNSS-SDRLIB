@@ -53,7 +53,7 @@ extern unsigned long tickgetus(void)
     }
     else {
         gettimeofday(&tv,NULL);
-        return tv.tv_sec*1000000UL+tv.tv_usecu;
+        return tv.tv_sec*1000000UL+tv.tv_usec;
     }
 #else
     gettimeofday(&tv,NULL);

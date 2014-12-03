@@ -125,7 +125,7 @@ void *lexthread(void * arg)
     if (!(rcode=(short *)sdrmalloc(sizeof(short)*sdr->nsamp)) || 
         !(xcode=cpxmalloc(sdr->nsamp))) {
             SDRPRINTF("error: initsdrch memory alocation\n");
-            return;
+            return THRETVAL;
     }
     rescode(sdr->code,sdr->clen,0,0,sdr->ci,sdr->nsamp,rcode); /* resampled code */
     cpxcpx(rcode,NULL,1.0,sdr->nsamp,xcode); /* FFT code */
