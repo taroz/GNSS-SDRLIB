@@ -397,13 +397,21 @@ extern void sendsbas(sdrsbas_t *sbas, sdrsoc_t *soc)
 *-----------------------------------------------------------------------------*/
 void writelog_header(FILE *fp, sdrtrk_t *trk)
 {
-    int i;
+    int i,ind[64]={0},n=trk->corrn;
     fprintf(fp,"Cnt,Tow,IP,QP,sumI,sumQ");
-    for (i=0;i<2*trk->corrn+1;i++) fprintf(fp,",I(%d)",(int)trk->corrx[i]);
+
+    /* generating correlation points indices */
+    for (i=0;i<n;i++) {
+        ind[i    ]=2*(n-i)-1;
+        ind[n+i+1]=2*(i+1);
+    }
+    /* output correlation result in order */
+    for (i=0;i<2*n+1;i++) fprintf(fp,",I(%d)",(int)trk->corrx[ind[i]]);
+    
     fprintf(fp,",Code Freq,Code Err,Code NCO");
     fprintf(fp,",Carr Freq,Carr Err,Carr NCO");
     fprintf(fp,",Freq Err,Carrier Phase");
-    fprintf(fp,",Flag Sync,Flag Syncf,Flag TOW,Flag Dec,Flag Loopfilter,swsync");
+    fprintf(fp,",FlagSync,FlagSyncf,FlagTOW,FlagDec,FlagLoopFilter,swsync");
     fprintf(fp,"\n");
 }
 /* write log to file -----------------------------------------------------------
@@ -415,7 +423,13 @@ void writelog_header(FILE *fp, sdrtrk_t *trk)
 *-----------------------------------------------------------------------------*/
 extern void writelog(FILE *fp, sdrtrk_t *trk,sdrnav_t *nav)
 {
-    int i;
+    int i,ind[64]={0},n=trk->corrn;
+    /* generating correlation points indices */
+    for (i=0;i<n;i++) {
+        ind[i    ]=2*(n-i)-1;
+        ind[n+i+1]=2*(i+1);
+    }
+
 #ifdef WIN32
     fprintf(fp,"%llu,%f,%f,%f",
         trk->cntout[0],trk->tow[0],trk->II[0],trk->QQ[0]);
@@ -424,7 +438,7 @@ extern void writelog(FILE *fp, sdrtrk_t *trk,sdrnav_t *nav)
         trk->cntout[0],trk->tow[0],trk->II[0],trk->QQ[0]);
 #endif
     fprintf(fp,",%f,%f",trk->sumI[0],trk->sumQ[0]);
-    for (i=0;i<2*trk->corrn+1;i++) fprintf(fp,",%f",trk->II[i]);
+    for (i=0;i<2*n+1;i++) fprintf(fp,",%f",trk->II[ind[i]]);
     fprintf(fp,",%f,%f,%f",trk->codefreq,trk->codeErr,trk->codeNco);
     fprintf(fp,",%f,%f,%f",trk->carrfreq,trk->carrErr,trk->carrNco);
     fprintf(fp,",%f,%f",trk->freqErr,trk->L[0]);

@@ -287,7 +287,7 @@ extern void *sdrthread(void *arg)
                     dll(sdr,&sdr->trk.prm1,sdr->ctime); /* DLL */
                     sdr->trk.flagloopfilter=1;
                 }
-                else if (sdr->nav.swsync) {
+                else if (sdr->nav.swloop) {
                     pll(sdr,&sdr->trk.prm2,(double)sdr->trk.loopms/1000);
                     dll(sdr,&sdr->trk.prm2,(double)sdr->trk.loopms/1000);
                     sdr->trk.flagloopfilter=2;
@@ -310,13 +310,12 @@ extern void *sdrthread(void *arg)
                             sizeof(double)*(sdr->trk.corrn*2+1));
                         plotthread(&plttrk);
                     }
-                    loopcnt++;
-                }
-
-                /* LEX thread */
-                if (((loopcnt-1)%LEXMS)==0) {
-                    if (sdrini.nchL6!=0&&sdr->no==sdrini.nch+1&&loopcnt>1000) 
+                    
+                    /* LEX thread */
+                    if (sdrini.nchL6!=0&&sdr->no==sdrini.nch+1&&loopcnt>250) 
                         setevent(hlexeve);
+
+                    loopcnt++;
                 }
 
                 if (sdr->no==1&&cnt%(1000*10)==0)

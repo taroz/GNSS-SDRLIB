@@ -58,7 +58,6 @@ extern int rcvinit(sdrini_t *ini)
         }
 #endif /* STEREOV26 */
         break;
-#endif
     /* STEREO Binary File */
     case FEND_FSTEREO: 
         /* IF file open */
@@ -76,6 +75,7 @@ extern int rcvinit(sdrini_t *ini)
             return -1;
         }
         break;
+#endif
 #ifdef GN3S
     /* SiGe GN3S v2/v3 */
     case FEND_GN3SV2: 
@@ -96,7 +96,6 @@ extern int rcvinit(sdrini_t *ini)
             return -1;
         }
         break;
-#endif
     /* GN3S Binary File */
     case FEND_FGN3SV2:
     case FEND_FGN3SV3:
@@ -120,6 +119,7 @@ extern int rcvinit(sdrini_t *ini)
             return -1;
         }
         break;
+#endif
 #ifdef BLADERF
     /* Nuand bladeRF */
     case FEND_BLADERF:
@@ -135,7 +135,6 @@ extern int rcvinit(sdrini_t *ini)
             return -1;
         }
         break;
-#endif
     /* BladeRF Binary File */
     case FEND_FBLADERF:
         /* IF file open */
@@ -154,6 +153,7 @@ extern int rcvinit(sdrini_t *ini)
             return -1;
         }
         break;
+#endif
 #ifdef RTLSDR
     /* RTL-SDR */
     case FEND_RTLSDR:
@@ -170,7 +170,6 @@ extern int rcvinit(sdrini_t *ini)
             return -1;
         }
         break;
-#endif
     /* RTL-SDR Binary File */
     case FEND_FRTLSDR:
         /* IF file open */
@@ -190,6 +189,7 @@ extern int rcvinit(sdrini_t *ini)
             return -1;
         }
         break;
+#endif
     /* File */
     case FEND_FILE:
         /* IF file open (FILE1) */
@@ -334,6 +334,11 @@ extern int rcvgrabdata(sdrini_t *ini)
 #endif
         stereo_pushtomembuf(); /* copy to membuffer */
         break;
+    /* STEREO Binary File */
+    case FEND_FSTEREO: 
+        fstereo_pushtomembuf(); /* copy to membuffer */
+        sleepms(5);
+        break;
 #endif
 #ifdef GN3S
     /* SiGe GN3S v2/v3 */
@@ -344,6 +349,12 @@ extern int rcvgrabdata(sdrini_t *ini)
             return -1;
         }
         break;
+    /* GN3S Binary File */
+    case FEND_FGN3SV2:
+    case FEND_FGN3SV3: 
+        fgn3s_pushtomembuf(); /* copy to membuffer */
+        sleepms(5);
+        break;
 #endif
 #ifdef BLADERF
     /* Nuand BladeRF */
@@ -352,6 +363,11 @@ extern int rcvgrabdata(sdrini_t *ini)
             SDRPRINTF("error: bladeRF...\n");
             return -1;
         }
+        break;
+    /* BladeRF Binary File */
+    case FEND_FBLADERF: 
+        fbladerf_pushtomembuf(); /* copy to membuffer */
+        sleepms(5);
         break;
 #endif
 #ifdef RTLSDR
@@ -362,28 +378,12 @@ extern int rcvgrabdata(sdrini_t *ini)
             return -1;
         }
         break;
-#endif
-    /* STEREO Binary File */
-    case FEND_FSTEREO: 
-        fstereo_pushtomembuf(); /* copy to membuffer */
-        sleepms(5);
-        break;
-    /* GN3S Binary File */
-    case FEND_FGN3SV2:
-    case FEND_FGN3SV3: 
-        fgn3s_pushtomembuf(); /* copy to membuffer */
-        sleepms(5);
-        break;
-    /* BladeRF Binary File */
-    case FEND_FBLADERF: 
-        fbladerf_pushtomembuf(); /* copy to membuffer */
-        sleepms(5);
-        break;
     /* RTL-SDR Binary File */
     case FEND_FRTLSDR: 
         frtlsdr_pushtomembuf(); /* copy to membuffer */
         sleepms(5);
         break;/* File */
+#endif
     case FEND_FILE:
         file_pushtomembuf(); /* copy to membuffer */
         sleepms(5);
@@ -412,6 +412,10 @@ extern int rcvgetbuff(sdrini_t *ini, uint64_t buffloc, int n, int ftype,
     case FEND_STEREO: 
         stereo_getbuff(buffloc,n,dtype,expbuf);
         break;
+    /* STEREO Binary File */
+    case FEND_FSTEREO: 
+        stereo_getbuff(buffloc,n,dtype,expbuf);
+        break;
 #endif
 #ifdef GN3S
     /* SiGe GN3S v2 */
@@ -422,10 +426,19 @@ extern int rcvgetbuff(sdrini_t *ini, uint64_t buffloc, int n, int ftype,
     case FEND_GN3SV3:
         gn3s_getbuff_v3(buffloc,n,dtype,expbuf);
         break;
+    /* GN3Sv2/v3 Binary File */
+    case FEND_FGN3SV2: 
+    case FEND_FGN3SV3: 
+        fgn3s_getbuff(buffloc,n,dtype,expbuf);
+        break;
 #endif
 #ifdef BLADERF
     /* Nuand BladeRF */
     case FEND_BLADERF:
+        bladerf_getbuff(buffloc,n,expbuf);
+        break;    
+    /* BladeRF Binary File */
+    case FEND_FBLADERF: 
         bladerf_getbuff(buffloc,n,expbuf);
         break;
 #endif
@@ -433,25 +446,12 @@ extern int rcvgetbuff(sdrini_t *ini, uint64_t buffloc, int n, int ftype,
     /* RTL-SDR */
     case FEND_RTLSDR:
         rtlsdr_getbuff(buffloc,n,expbuf);
-        break;
-#endif
-    /* STEREO Binary File */
-    case FEND_FSTEREO: 
-        stereo_getbuff(buffloc,n,dtype,expbuf);
-        break;
-    /* GN3Sv2/v3 Binary File */
-    case FEND_FGN3SV2: 
-    case FEND_FGN3SV3: 
-        fgn3s_getbuff(buffloc,n,dtype,expbuf);
-        break;
-    /* BladeRF Binary File */
-    case FEND_FBLADERF: 
-        bladerf_getbuff(buffloc,n,expbuf);
-        break;
+        break;    
     /* RTL-SDR Binary File */
     case FEND_FRTLSDR: 
         rtlsdr_getbuff(buffloc,n,expbuf);
         break;
+#endif
     /* File */
     case FEND_FILE:
         file_getbuff(buffloc,n,ftype,dtype,expbuf);

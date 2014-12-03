@@ -80,9 +80,9 @@ extern void *syncthread(void * arg)
                     break;
                 }
             }
-            if (j==OBSINTERPN&&ind[i]==0) 
+            if (j==OBSINTERPN-1&&ind[i]==0) 
                 SDRPRINTF("error:%s reftow=%.1f tow=%.1f\n",
-                    sdrch[isat[i]].satstr,trk[i].tow[OBSINTERPN],reftow);
+                    sdrch[isat[i]].satstr,trk[i].tow[OBSINTERPN-1],reftow);
         }
 
         /* decide reference satellite (nearest satellite) */

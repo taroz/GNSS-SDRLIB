@@ -32,6 +32,33 @@
 
 #define MAX_FILENAME_LEN (256)
 
+/* type definition -----------------------------------------------------------*/
+typedef struct _max2769Conf_t {
+    uint32_t confOne;
+    uint32_t confTwo;
+    uint32_t confThree;
+    uint32_t pllConf;
+    uint32_t nrDiv;
+    uint32_t fDiv;
+    uint32_t strm;
+    uint32_t clk;
+    uint32_t testOne;
+    uint32_t testTwo;
+} max2769Conf_t;
+
+typedef struct _max2112Conf_t {
+    uint8_t regValue[14];
+} max2112Conf_t;
+
+typedef struct _synthConf_t {
+    uint32_t r[8];
+    uint32_t r8, r9, r11, r13, r14, r15;
+} synthConf_t;
+
+typedef struct _adcConf_t {
+    unsigned char uiReg[10];
+} adcConf_t;
+
 /* stereo.c ------------------------------------------------------------------*/
 extern int stereo_init(void);
 extern void stereo_quit(void);
@@ -206,28 +233,6 @@ extern int STEREO_UpdateFpgaRegsStr(fpga_t *fpga, fpgaConf_t *conf);
 
 typedef unsigned char bit_t;
 
-typedef struct _max2769Conf_t {
-    uint32_t confOne;
-    uint32_t confTwo;
-    uint32_t confThree;
-    uint32_t pllConf;
-    uint32_t nrDiv;
-    uint32_t fDiv;
-    uint32_t strm;
-    uint32_t clk;
-    uint32_t testOne;
-    uint32_t testTwo;
-} max2769Conf_t;
-
-typedef struct _max2112Conf_t {
-    uint8_t regValue[14];
-} max2112Conf_t;
-
-typedef struct _synthConf_t {
-    uint32_t r[8];
-    uint32_t r8, r9, r11, r13, r14, r15;
-} synthConf_t;
-
 typedef struct _synth_t {
     double f_xo_l1;
     double f_xo_lb;
@@ -249,10 +254,6 @@ typedef struct _max2112_t {
     double bw;
     uint32_t gain;
 } max2112_t;
-
-typedef struct _adcConf_t {
-    unsigned char uiReg[10];
-} adcConf_t;
 
 extern const uint32_t STEREO_DATABUFF_SIZE;
 extern uint8_t STEREO_dataBuffer[];

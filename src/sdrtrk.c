@@ -160,12 +160,12 @@ extern void dll(sdrch_t *sdr, sdrtrkprm_t *prm, double dt)
 extern void setobsdata(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt, 
                        sdrtrk_t *trk, int snrflag)
 {
-    shiftright(&trk->tow[1],&trk->tow[0],sizeof(double),OBSINTERPN-1);
-    shiftright(&trk->L[1],&trk->L[0],sizeof(double),OBSINTERPN-1);
-    shiftright(&trk->D[1],&trk->D[0],sizeof(double),OBSINTERPN-1);
-    shiftright(&trk->codei[1],&trk->codei[0],sizeof(uint64_t),OBSINTERPN-1);
-    shiftright(&trk->cntout[1],&trk->cntout[0],sizeof(uint64_t),OBSINTERPN-1);
-    shiftright(&trk->remcout[1],&trk->remcout[0],sizeof(double),OBSINTERPN-1);
+    shiftdata(&trk->tow[1],&trk->tow[0],sizeof(double),OBSINTERPN-1);
+    shiftdata(&trk->L[1],&trk->L[0],sizeof(double),OBSINTERPN-1);
+    shiftdata(&trk->D[1],&trk->D[0],sizeof(double),OBSINTERPN-1);
+    shiftdata(&trk->codei[1],&trk->codei[0],sizeof(uint64_t),OBSINTERPN-1);
+    shiftdata(&trk->cntout[1],&trk->cntout[0],sizeof(uint64_t),OBSINTERPN-1);
+    shiftdata(&trk->remcout[1],&trk->remcout[0],sizeof(double),OBSINTERPN-1);
 
     trk->tow[0]=sdr->nav.firstsftow+
         (double)(cnt-sdr->nav.firstsfcnt)*sdr->ctime;
@@ -197,8 +197,8 @@ extern void setobsdata(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt,
 
     trk->Isum+=fabs(trk->sumI[0]);
     if (snrflag) {
-        shiftright(&trk->S[1],&trk->S[0],sizeof(double),OBSINTERPN-1);
-        shiftright(&trk->codeisum[1],&trk->codeisum[0],
+        shiftdata(&trk->S[1],&trk->S[0],sizeof(double),OBSINTERPN-1);
+        shiftdata(&trk->codeisum[1],&trk->codeisum[0],
             sizeof(uint64_t),OBSINTERPN-1);
 
         /* signal to noise ratio */

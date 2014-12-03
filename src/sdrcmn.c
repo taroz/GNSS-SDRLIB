@@ -30,6 +30,37 @@ extern int getfullpath(char *relpath, char *abspath)
 #endif
     return 0;
 }
+/* get tick time (micro second) ------------------------------------------------
+* get current tick in ms
+* args   : none
+* return : current tick in us
+*-----------------------------------------------------------------------------*/
+extern unsigned long tickgetus(void)
+{
+#ifdef WIN32
+    LARGE_INTEGER f,t;
+    QueryPerformanceFrequency(&f);
+    QueryPerformanceCounter(&t);
+    return (unsigned long)(t.QuadPart*1000000UL/f.QuadPart);
+#else
+    struct timespec tp={0};
+    struct timeval  tv={0};
+    
+#ifdef CLOCK_MONOTONIC_RAW
+    /* linux kernel > 2.6.28 */
+    if (!clock_gettime(CLOCK_MONOTONIC_RAW,&tp)) {
+        return tp.tv_sec*1000000UL+tp.tv_nsec/1000UL;
+    }
+    else {
+        gettimeofday(&tv,NULL);
+        return tv.tv_sec*1000000UL+tv.tv_usecu;
+    }
+#else
+    gettimeofday(&tv,NULL);
+    return (unsigned long)(tv.tv_sec*1000000UL+tv.tv_usec);
+#endif
+#endif
+}
 /* calculation log2(x) ---------------------------------------------------------
 * args   : double x         I   x data
 * return : double               log2(x)
@@ -807,15 +838,15 @@ extern void ind2sub(int ind, int nx, int ny, int *subx, int *suby)
     *subx = ind%nx;
     *suby = ny*ind/(nx*ny);
 }
-/* vector circle shift function  -----------------------------------------------
-* circle shift of vector data
-* args   : void   *dst      O   input data
-*          void   *src      I   shifted data
+/* vector shift function  ------------------------------------------------------
+* shift of vector data
+* args   : void   *dst      O   output shifted data
+*          void   *src      I   input data
 *          size_t size      I   type of input data (byte)
 *          int    n         I   number of input data
 * return : none
 *-----------------------------------------------------------------------------*/
-extern void shiftright(void *dst, void *src, size_t size, int n)
+extern void shiftdata(void *dst, void *src, size_t size, int n)
 {
     void *tmp;
     tmp=malloc(size*n);

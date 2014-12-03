@@ -520,8 +520,9 @@ typedef struct {
     void *fec;           /* FEC (fec.h)  */
     short *ocode;        /* overlay code (secondary code) */
     int ocodei;          /* current overray code index */
-    int swsync;          /* switch of frame synchronization (last bit) */
-    int swreset;         /* switch of frame synchronization (first bit) */
+    int swsync;          /* switch of frame synchronization (last nav bit) */
+    int swreset;         /* switch of frame synchronization (first nav bit) */
+    int swloop;          /* switch of loop filter */
     int flagsync;        /* navigation bit synchronization flag */
     int flagsyncf;       /* navigation frame synchronization (preamble found) */
     int flagtow;         /* first subframe found flag */
@@ -694,6 +695,7 @@ extern void freesdrch(sdrch_t *sdr);
 
 /* sdrcmn.c ------------------------------------------------------------------*/
 extern int getfullpath(char *relpath, char *abspath);
+extern unsigned long tickgetus(void);
 extern void sleepus(int usec);
 extern void settimeout(struct timespec *timeout, int waitms);
 extern double log2(double n);
@@ -731,7 +733,7 @@ extern double meanvd(const double *data, int n, int exinds, int exinde);
 extern double interp1(double *x, double *y, int n, double t);
 extern void uint64todouble(uint64_t *data, uint64_t base, int n, double *out);
 extern void ind2sub(int ind, int nx, int ny, int *subx, int *suby);
-extern void shiftright(void *dst, void *src, size_t size, int n);
+extern void shiftdata(void *dst, void *src, size_t size, int n);
 extern double rescode(const short *code, int len, double coff, int smax, 
                       double ci, int n, short *rcode);
 extern void pcorrelator(const char *data, int dtype, double ti, int n, 
@@ -775,7 +777,7 @@ extern int32_t merge_two_s(const int32_t a, const uint32_t b, int n);
 extern void bits2byte(int *bits, int nbits, int nbin, int right, uint8_t *bin);
 extern void interleave(const int *in, int row, int col, int *out);
 extern int checksync(double IP, double IPold, sdrnav_t *nav);
-extern int checkbit(double IP, sdrnav_t *nav);
+extern int checkbit(double IP, int loopms, sdrnav_t *nav);
 extern void predecodefec(sdrnav_t *nav);
 extern int paritycheck(sdrnav_t *nav);
 extern int findpreamble(sdrnav_t *nav);

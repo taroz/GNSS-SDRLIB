@@ -32,7 +32,7 @@ extern void sdrnavigation(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt)
     
     if (sdr->nav.flagsync) {
         /* navigation bit determination */
-        if (checkbit(sdr->trk.II[0],&sdr->nav)==OFF) {
+        if (checkbit(sdr->trk.II[0],sdr->trk.loopms,&sdr->nav)==OFF) {
             //SDRPRINTF("%s nav sync error!!\n",sdr->satstr);
         }
 
@@ -201,7 +201,7 @@ extern int checksync(double IP, double IPold, sdrnav_t *nav)
     
     /* BeiDou MEO/IGSO satellite (secondary code is NH20) */
     if (nav->ctype==CTYPE_B1I&&nav->sdreph.prn>5) {
-        memcpy(&nav->bitsync[0],&nav->bitsync[1],sizeof(int)*(nav->rate-1));
+        shiftdata(&nav->bitsync[0],&nav->bitsync[1],sizeof(int),nav->rate-1);
         nav->bitsync[nav->rate-1]=(IP<0?-1:1);
         
         /* correlation between NH20 */
@@ -234,30 +234,37 @@ extern int checksync(double IP, double IPold, sdrnav_t *nav)
 /* navigation data bit decision ------------------------------------------------
 * navigation data bit is determined using accumulated IP data
 * args   : double IP        I   correlation output (IP data)
+*          int    loopms    I   interval of loop filter (ms) 
 *          sdrnav_t *nav    I/O navigation struct
 * return : int                  synchronization status 1:sync 0: not sync
 *-----------------------------------------------------------------------------*/
-extern int checkbit(double IP, sdrnav_t *nav)
+extern int checkbit(double IP, int loopms, sdrnav_t *nav)
 {
     int diffi=nav->biti-nav->synci;
     int syncflag=ON;
     static int polarity=1;
+    static int cnt=0;
 
     nav->swreset=OFF;
     nav->swsync=OFF;
 
-    /* if synchronization start */
+    /* if synchronization is started */
     if (diffi==1||diffi==-nav->rate+1) {
         nav->bitIP=IP; /* reset */
         nav->swreset=ON;
+        cnt=1;
     } 
-    /* if synchronization finished */
+    /* after synchronization */
     else {
         nav->bitIP+=IP; /* cumsum */
         if (nav->bitIP*IP<0) syncflag=OFF;
     }
 
-    /* if bit is synchronized */
+    /* genetaing loop filter timing */
+    if (cnt%loopms==0) nav->swloop=ON;
+    else nav->swloop=OFF;
+
+    /* if synchronization is finished */
     if (diffi==0) {
         if (nav->flagpol) {
             polarity=-1;
@@ -266,11 +273,13 @@ extern int checkbit(double IP, sdrnav_t *nav)
         nav->bit=(nav->bitIP<0)?-polarity:polarity;
 
         /* set bit*/
-        memcpy(&nav->fbits[0],&nav->fbits[1],
-            sizeof(int)*(nav->flen+nav->addflen-1)); /* shift to left */
+        shiftdata(&nav->fbits[0],&nav->fbits[1],sizeof(int),
+            nav->flen+nav->addflen-1); /* shift to left */
         nav->fbits[nav->flen+nav->addflen-1]=nav->bit; /* add last */
         nav->swsync=ON;
     }
+    cnt++;
+
     return syncflag;
 }
 /* decode foward error correction ----------------------------------------------

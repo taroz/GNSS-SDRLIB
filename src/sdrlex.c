@@ -20,19 +20,18 @@ static fftwf_plan iplan=NULL;
 *          int    m         I   number of FFT points
 *          cpx_t  codex     I   frequency domain code
 *          double *cn       O   estimated C/N0
-* return : unsigned char        LEX message word
+* return : uint8_t              LEX message word
 * note : LEX message uses CSK modulation and it can be solve by FFT correlation
 *        LEX(E6) doppler shift and code phase are estimated by L1 signal
 *-----------------------------------------------------------------------------*/
-unsigned char lexcorr(sdrch_t *sdr, const char *data, int dtype, double ti, 
-                      int n, double freq, double crate, int m, cpx_t* codex, 
-                      double *cn)
+uint8_t lexcorr_fft(sdrch_t *sdr, const char *data, int dtype, double ti, int n,
+                    double freq, double crate, int m, cpx_t* codex, double *cn)
 {
     int codei,corri,exinds,exinde;
     cpx_t *datax;
     short *dataI,*dataQ;
     char *dataR;
-    double *P,maxP,meanP,cn0=0.0;
+    double *P,maxP,meanP;
 
     /* memory allocation */
     if (!(P=(double*)calloc(m,sizeof(double))) ||
@@ -70,15 +69,14 @@ unsigned char lexcorr(sdrch_t *sdr, const char *data, int dtype, double ti,
     exinds=codei-sdr->nsampchip; if(exinds<0) exinds+=n; /* excluded index */
     exinde=codei+sdr->nsampchip; if(exinde>=n) exinde-=n;
     meanP=meanvd(P,n,exinds,exinde); /* mean of correlation */
-    cn0=10*log10(maxP/meanP/sdr->ctime);
+    (*cn)=10*log10(maxP/meanP/sdr->ctime);
 
     /* message must be 0-255 */
     if (corri>255)
-        SDRPRINTF("error: corri=%05d codei=%06d cn0=%.1f\n",corri,codei,cn0);
+        SDRPRINTF("error: corri=%05d codei=%06d cn0=%.1f\n",corri,codei,cn);
 
-    *cn=cn0;
     free(P); sdrfree(dataR); sdrfree(dataI); sdrfree(dataQ); cpxfree(datax);
-    return (unsigned char)corri;
+    return (uint8_t)corri;
 }
 /* LEX thread ------------------------------------------------------------------
 * LEX message thread (called every 4ms from sdr channel thread)  
@@ -101,7 +99,7 @@ void *lexthread(void * arg)
     uint8_t lexpre[LENLEXPRE]={0x1A,0xCF,0xFC,0x1D}; /* preamble */
     sdrlex_t sdrlex={{0}};
     sdrout_t out={0};
-    unsigned int tick=0;
+    unsigned long tick=0;
     FILE *fplexlog=NULL,*fplexbin=NULL;
     short *rcode;
     cpx_t *xcode;
@@ -141,29 +139,27 @@ void *lexthread(void * arg)
         mlock(hlexmtx);
         waitevent(hlexeve,hlexmtx);
         unmlock(hlexmtx);
-
+        
         /* assist from L1CA */
         buffloc=sdrch[lexch].trk.codei[1]+sdrch[lexch].currnsamp+DSAMPLEX;
-        dfreq=sdrch[lexch].trk.D[1]*(FREQ6/FREQ1);
+        dfreq=-sdrch[lexch].trk.D[1]*(FREQ6/FREQ1);
 
         /* get current data */
         rcvgetbuff(&sdrini,buffloc,sdr->nsamp,sdr->ftype,sdr->dtype,data);
 
-        tick=tickget();
+        tick=tickgetus();
         /* LEX correlation */
-        corri=lexcorr(sdr,data,sdr->dtype,sdr->ti,sdr->nsamp,dfreq,sdr->crate,
+        corri=lexcorr_fft(sdr,data,sdr->dtype,sdr->ti,sdr->nsamp,dfreq,sdr->crate,
             sdr->nsamp,xcode,&cn0);
-        time+=tickget()-tick;
-        
+        time+=tickgetus()-tick;
+
         /* check computation time */
         if (cnt%250==0) {
-            if (time>1000)
-                SDRPRINTF("error: time=%dms (must be <1000ms)\n",time);
-            
+            SDRPRINTF("time=%.2fms\n",(double)time/250000);
             time=0;
         }
 
-        memcpy(&sdrlex.msg[0],&sdrlex.msg[1],LENLEXMSG-1); /* shift to left */
+        shiftdata(&sdrlex.msg[0],&sdrlex.msg[1],1,LENLEXMSG-1); /* shift to left */
         sdrlex.msg[LENLEXMSG-1]=corri; /* add last */
 
         /* preamble search */
