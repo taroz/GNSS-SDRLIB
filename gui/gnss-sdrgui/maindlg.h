@@ -3154,7 +3154,7 @@ namespace gnsssdrgui {
                  config->tb_corrp="4";
                  config->tb_dll1="5.0";
                  config->tb_pll1="30.0";
-                 config->tb_fll1="250.0";
+                 config->tb_fll1="500.0";
                  config->tb_dll2="1.0";
                  config->tb_pll2="10.0";
                  config->tb_fll2="50.0";
@@ -3499,7 +3499,7 @@ namespace gnsssdrgui {
                      config->tb_corrp="4";
                      config->tb_dll1="5.0";
                      config->tb_pll1="30.0";
-                     config->tb_fll1="250.0";
+                     config->tb_fll1="500.0";
                      config->tb_dll2="1.0";
                      config->tb_pll2="10.0";
                      config->tb_fll2="50.0";

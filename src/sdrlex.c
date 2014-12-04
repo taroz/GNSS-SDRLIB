@@ -74,8 +74,8 @@ uint8_t lexcorr_fft(sdrch_t *sdr, const char *data, int dtype, double ti, int n,
     maxP2=maxvd(P,m,exinds,exinde,&codei2);
     peakr=maxP/maxP2;
     
-    if (peakr<2.0)
-        SDRPRINTF("error: peakr=%.1f",peakr);
+    if (peakr<1.5)
+        SDRPRINTF("error: peakr=%.1f\n",peakr);
 
     /* message must be 0-255 */
     if (corri>255)
@@ -161,11 +161,11 @@ void *lexthread(void * arg)
         time+=dt;
 
         if (dt>4000) 
-            SDRPRINTF("error: dt=.1fms(must be < 4ms)\n",(double)dt/1000);
+            SDRPRINTF("error: dt=%.1fms(must be < 4ms)\n",(double)dt/1000);
 
         /* check computation time */
         if (cnt%250==0) {
-            SDRPRINTF("time=%.2fms doppler=%.1f\n",(double)time/250000,dfreq);
+            //SDRPRINTF("time=%.2fms doppler=%.1f\n",(double)time/250000,dfreq);
             time=0;
         }
 
