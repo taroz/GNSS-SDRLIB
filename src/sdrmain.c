@@ -254,8 +254,8 @@ extern void *sdrthread(void *arg)
     if (initpltstruct(&pltacq,&plttrk,sdr)<0) {
         sdrstat.stopflag=ON;
     }
-    SDRPRINTF("**** %s sdr thread %d start! ****\n",sdr->satstr,sdr->no);
     sleepms(sdr->no*500);
+    SDRPRINTF("**** %s sdr thread %d start! ****\n",sdr->satstr,sdr->no);
 
     while (!sdrstat.stopflag) {
         /* acquisition */

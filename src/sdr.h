@@ -506,6 +506,7 @@ typedef struct {
     int prelen;          /* preamble bits length (bits) */
     int bit;             /* current navigation bit */
     int biti;            /* current navigation bit index */
+    int cnt;             /* navigation bit counter for synchronization */
     double bitIP;        /* current navigation bit (IP data) */
     int *fbits;          /* frame bits */
     int *fbitsdec;       /* decoded frame bits */

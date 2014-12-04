@@ -27,11 +27,11 @@ static fftwf_plan iplan=NULL;
 uint8_t lexcorr_fft(sdrch_t *sdr, const char *data, int dtype, double ti, int n,
                     double freq, double crate, int m, cpx_t* codex, double *cn)
 {
-    int codei,corri,exinds,exinde;
+    int codei,codei2,corri,exinds,exinde;
     cpx_t *datax;
     short *dataI,*dataQ;
     char *dataR;
-    double *P,maxP,meanP;
+    double peakr,*P,maxP,maxP2,meanP;
 
     /* memory allocation */
     if (!(P=(double*)calloc(m,sizeof(double))) ||
@@ -61,7 +61,7 @@ uint8_t lexcorr_fft(sdrch_t *sdr, const char *data, int dtype, double ti, int n,
     cpxconv(plan,iplan,datax,codex,m,m,0,P);
 
     /* maximum index */
-    maxP=maxvd(P,m,100,8000,&codei);
+    maxP=maxvd(P,m,-1,-1,&codei);
     corri=(int)((double)(n-codei)/n*sdr->clen/2);
     if (corri==(int)(sdr->clen/2)) corri=0;
 
@@ -70,6 +70,12 @@ uint8_t lexcorr_fft(sdrch_t *sdr, const char *data, int dtype, double ti, int n,
     exinde=codei+sdr->nsampchip; if(exinde>=n) exinde-=n;
     meanP=meanvd(P,n,exinds,exinde); /* mean of correlation */
     (*cn)=10*log10(maxP/meanP/sdr->ctime);
+
+    maxP2=maxvd(P,m,exinds,exinde,&codei2);
+    peakr=maxP/maxP2;
+    
+    if (peakr<2.0)
+        SDRPRINTF("error: peakr=%.1f",peakr);
 
     /* message must be 0-255 */
     if (corri>255)
@@ -91,7 +97,7 @@ void *lexthread(void * arg)
 #endif
 {
     sdrch_t *sdr=(sdrch_t*)arg;
-    int cnt=0,lexch=0,state,i,nerr,errloc[LENLEXRS],time=0,mid;
+    int cnt=0,lexch=0,state,i,nerr,errloc[LENLEXRS],time=0,dt,mid;
     uint64_t buffloc;
     double dfreq,cn0;
     char *data;
@@ -151,11 +157,15 @@ void *lexthread(void * arg)
         /* LEX correlation */
         corri=lexcorr_fft(sdr,data,sdr->dtype,sdr->ti,sdr->nsamp,dfreq,sdr->crate,
             sdr->nsamp,xcode,&cn0);
-        time+=tickgetus()-tick;
+        dt=tickgetus()-tick;
+        time+=dt;
+
+        if (dt>4000) 
+            SDRPRINTF("error: dt=.1fms(must be < 4ms)\n",(double)dt/1000);
 
         /* check computation time */
         if (cnt%250==0) {
-            SDRPRINTF("time=%.2fms\n",(double)time/250000);
+            SDRPRINTF("time=%.2fms doppler=%.1f\n",(double)time/250000,dfreq);
             time=0;
         }
 

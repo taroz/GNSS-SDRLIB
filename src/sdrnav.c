@@ -240,10 +240,7 @@ extern int checksync(double IP, double IPold, sdrnav_t *nav)
 *-----------------------------------------------------------------------------*/
 extern int checkbit(double IP, int loopms, sdrnav_t *nav)
 {
-    int diffi=nav->biti-nav->synci;
-    int syncflag=ON;
-    static int polarity=1;
-    static int cnt=0;
+    int diffi=nav->biti-nav->synci,syncflag=ON,polarity=1;
 
     nav->swreset=OFF;
     nav->swsync=OFF;
@@ -252,7 +249,7 @@ extern int checkbit(double IP, int loopms, sdrnav_t *nav)
     if (diffi==1||diffi==-nav->rate+1) {
         nav->bitIP=IP; /* reset */
         nav->swreset=ON;
-        cnt=1;
+        nav->cnt=1;
     } 
     /* after synchronization */
     else {
@@ -261,15 +258,16 @@ extern int checkbit(double IP, int loopms, sdrnav_t *nav)
     }
 
     /* genetaing loop filter timing */
-    if (cnt%loopms==0) nav->swloop=ON;
+    if (nav->cnt%loopms==0) nav->swloop=ON;
     else nav->swloop=OFF;
 
     /* if synchronization is finished */
     if (diffi==0) {
         if (nav->flagpol) {
             polarity=-1;
+        } else {
+            polarity=1;
         }
-        // ????
         nav->bit=(nav->bitIP<0)?-polarity:polarity;
 
         /* set bit*/
@@ -278,7 +276,7 @@ extern int checkbit(double IP, int loopms, sdrnav_t *nav)
         nav->fbits[nav->flen+nav->addflen-1]=nav->bit; /* add last */
         nav->swsync=ON;
     }
-    cnt++;
+    nav->cnt++;
 
     return syncflag;
 }
