@@ -524,7 +524,7 @@ extern int initnavstruct(int sys, int ctype, int prn, sdrnav_t *nav)
     int pre_b1i[11]= {-1,-1,-1, 1, 1, 1,-1, 1, 1,-1, 1}; /* B1I preamble */
     int pre_sbs[24]= { 1,-1, 1,-1, 1, 1,-1,-1,-1, 1,
                        1,-1,-1, 1,-1, 1,-1,-1, 1, 1,
-                       1 -1,-1, 1}; /* SBAS L1/QZS L1SAIF preamble */
+                       1,-1,-1, 1}; /* SBAS L1/QZS L1SAIF preamble */
 
     int poly[2]={V27POLYA,V27POLYB};
 
